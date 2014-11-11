@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[demo]{graphicx}
+\usepackage{booktabs}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+\usepackage{breakurl}
+\usepackage{array}
+\newcommand\Mark[1]{\textsuperscript#1}
+\renewcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textbf{#1}}}%
+
+\begin{document}
+
+<<setup, include=FALSE, cache=TRUE>>=
+# set global chunk options
+# for figures
+opts_chunk$set(fig.path='figs/', fig.align='center', fig.show='hold',
+               dev='CairoPDF', out.width='.4\\linewidth')
+# replacing "=" into "->" to make it R thing
+options(replace.assign=TRUE,width=90)
+# caching chunks
+opts_chunk$set(cache.extra = R.version,cache.path='cache/')
+opts_chunk$set(cache.extra = rand_seed)
+@
+
+\begingroup
+\centering
+{\LARGE Chromatin Conformation Prediction\\[1.5em]
+\large Ricky Lim\Mark{1}, Agus Salim\Mark{2}, Touati Benoukraf\Mark{1}}\\[1em]
+\begin{tabular}{*{3}{>{\centering}p{.25\textwidth}}}
+\Mark{1}Cancer Science Institute of Singapore& \Mark{2}Department of Mathematics and Statistics& \Mark{3}Cancer Science Institute of Singapore\tabularnewline
+National University of Singapore& La Trobe University& National University of Singapore\tabularnewline
+\url{csilr@nus.edu.sg} & \url{A.Salim@latrobe.edu.au} & \url{csitb@nus.edu.sg}
+\end{tabular}\par
+\endgroup
+
+\section{Introduction}
+
+\textbf{The Idea}:
+\\ 
+\\
+ChIPseq could identify not only the direct binding sites of the chromatin protein of interest, but also the indirect ones. 
+This owes to the existance of chromatin conformations or complexes. The formation of such complexes will cluster co-factors in close proximity.
+ChIPseq experiment allows the collections of such cluster by means of immunoprecipitation.
+\\ 
+Here, we are interested in the identification of not only the \textit{direct} binding sites but also the \textit{indirect} ones. With such knowledge, we could predict the chromatin conformation of the protein of interest.
+\\
+
+\textbf{Question:} 
+\begin{itemize}
+    \item Could we cluster the direct and indirect bindings of chromatin proteins from ChIP-seq experiment using Mixture Models (MMs) ?
+
+\end{itemize}
+    
+    Using M-Component MM, each cluster is called into each component. Therefore each component corresponds to a cluster of binding sites of the chromatin protein.
+
+
+\begin{verbatim}
+  Filename: chromatinConformation.Rnw
+  Working directory: \Sexpr{getwd()} 
+\end{verbatim}
+
+\section{Metainfo}
+<<>>=
+sessionInfo()
+@
+
+<<knitIt, include=FALSE, cache=TRUE, message=FALSE, warning=FALSE>>=
+library(knitr)
+purl("chromatinConformation.Rnw" ) # compile to tex
+purl("chromatinConformation.Rnw", documentation = 0) # extract R code only
+knit2pdf("chromatinConformation.Rnw")
+@
+
+\end{document}
