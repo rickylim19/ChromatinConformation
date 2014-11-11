@@ -1,0 +1,375 @@
+\documentclass{article}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+\usepackage{breakurl}
+\usepackage{array}
+\newcommand\Mark[1]{\textsuperscript#1}
+\renewcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textbf{#1}}}%
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+# set global chunk options
+# for figures
+opts_chunk$set(fig.path='figs/', fig.align='center', fig.show='hold',
+               dev='CairoPDF', out.width='.4\\linewidth')
+# replacing "=" into "->" to make it R thing
+options(replace.assign=TRUE,width=90)
+# caching chunks
+opts_chunk$set(cache.extra = R.version,cache.path='cache/')
+opts_chunk$set(cache.extra = rand_seed)
+@
+
+\begingroup
+\centering
+{\LARGE Predicting the Chromatin Conformation of P53 From ChIPseq Dataset: part 2 (Motif Discovery Analysis) \\[1.5em]
+\large Ricky Lim\Mark{1}, Samuel Collombet\Mark{2}, Agus Salim\Mark{3}, Touati Benoukraf\Mark{1}}\\[1em]
+\begin{tabular}{*{3}{>{\centering}p{.25\textwidth}}}
+    \Mark{1}Cancer Science Institute of Singapore, National University of Singapore&\Mark{2}Institut de Biologie de l'Ecole Normale Superieur de Paris& \Mark{3}Department of Mathematics and Statistics& \tabularnewline
+\url{benoukraf@nus.edu.sg}
+\end{tabular}\par
+\endgroup
+
+\begin{verbatim}
+  Filename: motifAnalysis.Rnw 
+  Working directory: \Sexpr{getwd()} 
+\end{verbatim}
+
+<<Rcode>>=
+source('/home/ricky/Rlim/ChromatinConformation/MotifCalls/MotifCalls.R')
+work_dir = '/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/'
+@
+
+
+\section{Database-based Motif Discovery: Centdist}
+We run CentDist to search for the occurrances of database motifs (JASPAR and TRANSFAC) \href{biogpu.ddns.comp.nus.edu.sg}{CentDist} on the ChIPseq Peaks indirect and direct clusters.
+In all cluster distance, however the P53 motifs were found in both direct and indirect clusters (in their top 50).\\
+
+OutputDir for cluster distance of 3kb, 5kb, 20kb and 50kb:
+\begin{verbatim}
+/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/CentDist
+
+# change the '_' and '$' into '-' as these characters were already assigned in LaTeX
+sed 's/\_\|\$/-/g' result.txt > tmp
+mv tmp result.txt
+\end{verbatim}
+
+<<CentDistP53>>=
+NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct <- 
+    read.delim(paste0(work_dir,'Output/Centdist/',
+    'NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/result.txt'))
+NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect <- 
+    read.delim(paste0(work_dir,'Output/Centdist/',
+    'NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/result.txt'))
+@
+\clearpage
+
+\section{Centdist Motif Results for Direct and Indirect Clusters within 50kb}
+\begin{table}[h!]
+  \centering
+    \multicolumn{2}{c}{Direct}
+    \multicolumn{2}{c}{Indirect} \\
+    \cline{1-2}
+    \cline{2-4}
+  \begin{tabular}{ | m{5cm} | c | m{5cm} | c | }
+    \hline
+    Info & Dist & Info & Dist\\ \hline
+
+      %row1
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[1,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[1,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$jaspar_TP53.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[5,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[5,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[5,'P.value']}
+        \item Rank: 5
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$jaspar_TP53.png}
+    \end{minipage}
+    \\ \hline
+
+      %row2
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[2,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[2,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[2,'P.value']}
+        \item Rank: 2
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$P53_01.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[8,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[8,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[8,'P.value']}
+        \item Rank: 8
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$P53_01.png}
+    \end{minipage}
+    \\ \hline
+
+      %row3
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[3,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[3,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[3,'P.value']}
+        \item Rank: 3
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$jaspar_CTCF}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[1,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[1,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$jaspar_CTCF}
+    \end{minipage}
+    \\ \hline
+
+      %row4
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[4,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[4,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[4,'P.value']}
+        \item Rank: 4
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$AP1_Q4_01.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[2,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[2,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[2,'P.value']}
+        \item Rank: 2
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$AP1_Q4_01.png}
+    \end{minipage}
+    \\ \hline
+
+      %row5
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[5,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[5,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[5,'P.value']}
+        \item Rank: 5
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$AML1_01.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[3,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[3,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[3,'P.value']}
+        \item Rank: 3
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$AML1_01.png}
+    \end{minipage}
+    \\ \hline
+
+
+
+  \end{tabular}
+  \caption{P53 ChIPseq in SAOS2: CentDist Motif Discovery}\label{P53Centdist}
+\end{table}
+
+\clearpage
+
+
+\begin{table}[h!]
+  \centering
+    \multicolumn{2}{c}{Direct}
+    \multicolumn{2}{c}{Indirect} \\
+    \cline{1-2}
+    \cline{2-4}
+  \begin{tabular}{ | m{5cm} | c | m{5cm} | c | }
+    \hline
+    Info & Dist & Info & Dist\\ \hline
+
+      %row6
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[6,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[6,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[6,'P.value']}
+        \item Rank: 6
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$jaspar_AP1.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[6,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[6,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[6,'P.value']}
+        \item Rank: 6
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$jaspar_AP1.png}
+    \end{minipage}
+    \\ \hline
+
+      %row7
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[7,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[7,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[7,'P.value']}
+        \item Rank: 7
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$BACH2_01.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[4,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[4,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[4,'P.value']}
+        \item Rank: 4
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$BACH2_01.png}
+    \end{minipage}
+    \\ \hline
+
+      %row8
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[8,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[8,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[8,'P.value']}
+        \item Rank: 8
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$jaspar_RUNX1.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[7,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[7,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[7,'P.value']}
+        \item Rank: 7
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$jaspar_RUNX1.png}
+    \end{minipage}
+    \\ \hline
+
+      %row9
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[9,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[9,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[9,'P.value']}
+        \item Rank: 9
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$MAF_Q6_01.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[10,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[10,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[10,'P.value']}
+        \item Rank: 10
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$MAF_Q6_01.png}
+    \end{minipage}
+    \\ \hline
+
+      %row10
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[10,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[10,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct[10,'P.value']}
+        \item Rank: 10
+      \end{itemize}
+    & 
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/V$NRF2_Q4.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[9,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[9,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect[9,'P.value']}
+        \item Rank: 9
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect/V$NRF2_Q4.png}
+    \end{minipage}
+    \\ \hline
+
+
+  \end{tabular}
+  \caption{P53 ChIPseq in SAOS2: CentDist Motif Discovery}\label{P53Centdist}
+\end{table}
+
+
+\section{Metainfo}
+<<>>=
+sessionInfo()
+@
+
+<<knitIt,include=FALSE, cache=TRUE, results='hide', message=FALSE, warning=FALSE>>=
+library(knitr)
+purl("motifAnalysis.Rnw" ) # compile to tex
+purl("motifAnalysis.Rnw", documentation = 0) # extract R code only
+knit2pdf("motifAnalysis.Rnw")
+@
+
+
+
+\end{document}
+
