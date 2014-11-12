@@ -328,25 +328,25 @@ Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <-
 
       %row1
       \begin{itemize}
-        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[11,'Name']}
-        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[11,'Binding.Range']}
-        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[11,'P.value']}
-        \item Rank: 11
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[1,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[1,'Binding.Range']}
+        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[1,'P.value']}
+        \item Rank: 1
       \end{itemize}
       &
     \begin{minipage}{.2\textwidth}
-      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/V$CEBP_01.png}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/V$CEBPB_02}
     \end{minipage}
     &
       \begin{itemize}
-        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[32,'Name']}
-        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[32,'Binding.Range']}
-        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[32,'P.value']}
-        \item Rank: 32
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[1,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[1,'Binding.Range']}
+        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[1,'P.value']}
+        \item Rank: 1
       \end{itemize}
     &
     \begin{minipage}{.2\textwidth}
-      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/V$CEBP_Q2.png}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/V$CEBPB_02}
     \end{minipage}
     \\ \hline
 
@@ -358,7 +358,7 @@ Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <-
 
 \begin{figure}[!htp]
     \centering
-    \subfloat{\includegraphics[width = 7in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/top5_Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct.png}}
+    \subfloat{\includegraphics[width = 7in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/top5_koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct.png}}
     \\
     \subfloat{\includegraphics[width = 7in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/top5_Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect.png}}
     \caption{Top 5 Motifs Discovered from Direct and Indirect Clusters.}
