@@ -83,6 +83,26 @@ fitMMs <- function(X, max_k, model){
 
 } 
 
+# Probability density function for a Gaussian mixture
+  # Presumes the mixture object has the structure used by mixtools
+dnormalmix <- function(x,mixture,log=FALSE) {
+    lambda <- mixture$lambda
+    k <- length(lambda)
+    # Calculate share of likelihood for all data for one component
+    like.component <- function(x,component) {
+    lambda[component]*dnorm(x,mean=mixture$mu[component],
+                            sd=mixture$sigma[component])
+    }
+    # Create array with likelihood shares from all components over all data
+    likes <- sapply(1:k,like.component,x=x)
+    # Add up contributions from components
+    d <- rowSums(likes)
+    if (log) {
+    d <- log(d)
+    }
+    return(d)
+}
+
 
 visualizeFitMMs <- function(X, MMs_list, max_k, output_n, model='GMM', titleName){
 
@@ -102,6 +122,8 @@ visualizeFitMMs <- function(X, MMs_list, max_k, output_n, model='GMM', titleName
     #                                                                                #
     ##################################################################################
 
+    #ifelse(logTransf, x <- X$pileup,
+    #                  x <- seq(min(X$pileup)-1, max(X$pileup)+1, 1))
     x <- seq(min(X$pileup)-1, max(X$pileup)+1, 1)
 
     for (MM in MMs_list){
@@ -131,7 +153,8 @@ visualizeFitMMs <- function(X, MMs_list, max_k, output_n, model='GMM', titleName
         # fitting of each component in the mixture
         output_f <- paste0(output_n, '_comp', k, '.pdf')   
         p <- ggplot(X, aes(x=pileup))+
-            geom_histogram(aes(y=..density..), binwidth=1, fill='#969696') +
+            #geom_histogram(aes(y=..density..), binwidth=1, fill='#969696') +
+            geom_histogram(aes(y=..density..), fill='#969696') +
             geom_line(stat='density', alpha=0.6, size=1.5)
             for (i in seq(k)){
                 p <- p + geom_area(data=plot_table, 
@@ -153,6 +176,48 @@ visualizeFitMMs <- function(X, MMs_list, max_k, output_n, model='GMM', titleName
              ggtitle(paste0(k, '-Component ', model,'-', titleName))
         ggsave(file=output_f2)
     } 
+}
+
+plotFitMM <- function(X, MM_list, output_n, titleName, model='GMM', ymax){
+
+    ###############################################################################
+    #                                                                             #
+    # Returns two types of plots in pdf format                                    #
+    #  1. Fitting of each component in the mixture on the empirical distribution  #
+    #  2. Fitting of all components in the mixture on the empirical distribution  #
+    #     (Empirical vs. Mixture Model)                                           #
+    #                                                                             #
+    # >plotFitMM(Koeffler_BM_CebpE_log$pileup, GMMs_list_Koeffler_BM_CebpE_log,   #
+    #            output_n='figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log',    #
+    #            titleName='Koeffler_BM_CebpE_log', model='GMM')                  #
+    #                                                                             #
+    ###############################################################################
+
+    if (model=='GMM'){
+        for (k in seq_along(MM_list)){
+
+            # fit each component of the mixture model
+            pdf(paste0(output_n, '_comp', k+1, '.pdf'), 
+                useDingbats=FALSE)
+            plot(MM_list[[k]], which=2, 
+                main2=paste0(titleName, k+1, '.pdf'))
+            lines(density(X, lty=2, lwd=2))
+            dev.off()
+
+            # empirical vs gaussian
+            pdf(paste0(output_n, '_comp', k+1, '_empVsModel.pdf'), 
+                useDingbats=FALSE)
+            density_val<- density(X)
+            plot(density_val,lty=1,ylim=c(0,max(density_val$y)), 
+                main=paste("Comparison of density estimates\n",
+                            "Empirical vs. Gaussian mixture\n",
+                            titleName, '_comp', k+1, '.pdf'),bty='n')
+            curve(dnormalmix(x,MM_list[[k]]),lty=2,add=TRUE)
+            legend('topright', lty=c(1,2),c('= Empirical', '= Gaussian mixture'), bty='n')
+            dev.off()
+        }
+
+    }
 }
 
 getModelAssessment <- function(MMs_list, max_k, output_n, model='GMM', titleName){
