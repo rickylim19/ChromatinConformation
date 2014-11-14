@@ -1,0 +1,97 @@
+\section{Motif Analysis}
+Motif Analysis is performed to discovery the presence of motif patterns in direct and indirect binding sites.
+
+\subsection{CentDist}
+
+Run CentDist to search for the occurrances of motifs \href{biogpu.ddns.comp.nus.edu.sg}{CentDist}.
+With cluster distance ranging from 100-1000bp, Only the distance of 300bp in which CEBPe motif is not found in indirect bindings, as shown in Figure ~\ref{fig:CentDist300}. 
+Whereas the other cluster distance, the CEBPe motif is found in indirect and direct clusters.
+The motif families discovered by CentDist for the cluster of 300bp are displayed as clouds in Figure ~\ref{fig:motifCloudCentDist300}
+
+\clearpage
+\begin{figure}[!htp]
+    \centering
+    \subfloat{\includegraphics[width = 6in]{MotifCalls/Output/CentDist/Koeffler_BM_Cebpe_GMM_ModelAssignment_comp3/Koeffler_BM_Cebpe_ModelAssignment_comp3_direct_300_motif1000.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 6in]{MotifCalls/Output/CentDist/Koeffler_BM_Cebpe_GMM_ModelAssignment_comp3/Koeffler_BM_Cebpe_ModelAssignment_comp3_indirect_300_motif1000.pdf}}
+    \caption{CentDist Top 5 from the direct and indirect bindings with bicluster distance of 300: Screenshot}
+    \label{fig:CentDist300}
+\end{figure}
+\clearpage
+
+<<motifCloudCentDistGMM, echo=FALSE, results='hide', cache=TRUE>>=
+Koeffler_BM_Cebpe_GMM_CentDistMotif_direct300 <- read.delim(
+                        paste0('MotifCalls/Output/CentDist/',
+                                'Koeffler_BM_Cebpe_GMM_ModelAssignment_comp3/',
+                                'Koeffler_BM_Cebpe_GMM_ModelAssignment_comp3_direct_300_motif1000.txt'),
+                        )
+
+Koeffler_BM_Cebpe_GMM_CentDistMotif_indirect300 <- read.delim(
+                        paste0('MotifCalls/Output/CentDist/',
+                                'Koeffler_BM_Cebpe_GMM_ModelAssignment_comp3/',
+                                'Koeffler_BM_Cebpe_GMM_ModelAssignment_comp3_indirect_300_motif1000.txt'),
+                        )
+
+Koeffler_BM_Cebpe_GMM_CentDistFamily_direct300 <- Koeffler_BM_Cebpe_CentDistMotif_direct300[, 'Family']
+Koeffler_BM_Cebpe_GMM_CentDistScore_direct300 <- Koeffler_BM_Cebpe_CentDistMotif_direct300[, 'Score']
+
+Koeffler_BM_Cebpe_GMM_CentDistFamily_indirect300 <- Koeffler_BM_Cebpe_CentDistMotif_indirect300[, 'Family']
+Koeffler_BM_Cebpe_GMM_CentDistScore_indirect300 <- Koeffler_BM_Cebpe_CentDistMotif_indirect300[, 'Score']
+
+createMotifClouds(Koeffler_BM_Cebpe_GMM_CentDistFamily_direct300,
+                  Koeffler_BM_Cebpe_GMM_CentDistScore_direct300*100, 
+                  'Koeffler_BM_Cebpe_GMM_CentDist_direct300_WordCloud')
+
+createMotifClouds(Koeffler_BM_Cebpe_GMM_CentDistFamily_indirect300,
+                  Koeffler_BM_Cebpe_GMM_CentDistScore_indirect300*100, 
+                  'Koeffler_BM_Cebpe_GMM_CentDist_indirect300_WordCloud')
+@
+
+\clearpage
+\begin{figure}[!htp]
+    \centering
+    \subfloat{\includegraphics[width = 5in, height=4in]{MotifCalls/Output/Plots/Koeffler_BM_Cebpe_CentDist_direct300_WordCloud.pdf}}
+    \subcaption{Direct bindings.}
+    \\
+    \subfloat{\includegraphics[width = 5in, height=4in]{MotifCalls/Output/Plots/Koeffler_BM_Cebpe_CentDist_indirect300_WordCloud.pdf}}
+    \subcaption{Indirect bindings.}
+    \caption{Motif Cloud of KoefflerBMCebpe clustered within 300bp: CentDist. Top and below refers to direct and indirect bindings respectively. The scale of the motif cloud corresponds to its CentDist-score. }
+    \label{fig:motifCloudCentDist300}
+\end{figure}
+\clearpage
+
+
+<<>>=
+filter_score_indirect <- Koeffler_BM_Cebpe_GMM_CentDistMotif_indirect300$Score > 1
+filter_score_direct <- Koeffler_BM_Cebpe_GMM_CentDistMotif_direct300$Score > 1
+indirect300 <- Koeffler_BM_Cebpe_GMM_CentDistMotif_indirect300[filter_score_indirect, 'Family']
+direct300 <- Koeffler_BM_Cebpe_GMM_CentDistMotif_direct300[filter_score_direct, 'Family']
+
+intersect(direct300, indirect300)
+
+Koeffler_BM_Cebpe_CentDistMotif_indirect300Only <- setdiff(indirect300, direct300)
+
+@
+
+TF binding motif families that are present only in indirect clusters but not in direct: 
+\begin{verbatim}
+    \Sexpr{Koeffler_BM_Cebpe_CentDistMotif_indirect300Only}. 
+\end{verbatim}
+
+
+\subsection{RSTAT: peak-motifs}
+
+<<engine='bash'>>=
+#source MotifCalls/getFasta4PeakMotifs.sh
+@
+
+\subsection{Homer}
+
+Prepare the bed file with the format, specified by HOMER.
+
+<<cache=TRUE, engine='bash'>>=
+# bash script to add unique peak ID at column 4 and expand the peak +- 200
+#source MotifCalls/getBed4Homer.sh
+@
+
+
