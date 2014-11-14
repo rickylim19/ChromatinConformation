@@ -59,10 +59,15 @@ work_dir = '/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/'
 Proof-of-concept: We used ChIP-seq peak signals of CebpE in bone marrow cells from Koeffler's Lab.
 Here is the quick insight on Cebp Protein from \href{https://pubmedylicious.appspot.com/result/564730861610598://pubmedylicious.appspot.com/result/5073520312713216}{Pubmedylicious}.
 
-<<Dataset>>=
+<<Dataset, cache=TRUE>>=
 Koeffler_BM_CebpE <- read.table(paste0(work_dir, 
                         'Input/KoefflerLab_BM_ChIPseq_CebpE_mm10_q10rmdup_peaks.xls'), 
                         header=T, sep='\t', row.names=10, skip=28)
+head(Koeffler_BM_CebpE)
+log_pileup <- log10(Koeffler_BM_CebpE$pileup)
+Koeffler_BM_CebpE_log <- Koeffler_BM_CebpE
+head(Koeffler_BM_CebpE_log)
+Koeffler_BM_CebpE_log[, 'pileup'] <- log_pileup
 
 p1 <- ggplot(Koeffler_BM_CebpE, aes(x=pileup)) +
         geom_histogram(aes(y = ..density..), fill='#969696', binwidth=25) +
@@ -91,9 +96,9 @@ ggsave('figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf', p2)
 
 \clearpage
 \begin{figure}[!htbp]
-    \includegraphics[width=6in, height=3in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks.pdf}
+    \includegraphics[width=7in, height=4in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks.pdf}
     \\
-    \includegraphics[width=6in, height=3in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf}
+    \includegraphics[width=7in, height=4in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf}
     \caption{Distibution of ChIPseq Peak Pileup Scores.}
     \label{fig:DistributionChipPeak}
 \end{figure}
@@ -184,6 +189,12 @@ GMMs_list_Koeffler_BM_CebpE <- fitMMs(X=Koeffler_BM_CebpE$pileup, max_k=10, mode
 
 @
 
+\subsection{GMMs Fitted on Log-Transformed ChIP-seq Peaks}
+<<FitGMMs_log, results='hide', cache=TRUE>>=
+GMMs_list_Koeffler_BM_CebpE_log <- fitMMs(X=Koeffler_BM_CebpE_log$pileup, max_k=10, model = 'GMM')
+@
+
+
 \subsection{NBMs fitted on ChIPseq Peaks}
 
 <<fitNB, results='hide', cache=TRUE>>=
@@ -223,6 +234,26 @@ visualizeFitMMs(X=Koeffler_BM_CebpE, MMs_list=GMMs_list_Koeffler_BM_CebpE,
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_comp10.pdf}}
     \caption{ChIPseq Peaks Fit with GMMs Ranging from Two to Ten Components}
     \label{fig:FittingChIPGMM}
+\end{figure}
+\clearpage
+
+\subsection{Fitted GMMs Visualized on ChIP-seq Log Distributions}
+<<VisualizeFitGMMsLog, echo=FALSE, message=FALSE, cache=TRUE>>=
+
+plotFitMM(Koeffler_BM_CebpE_log$pileup, GMMs_list_Koeffler_BM_CebpE_log,
+          output_n='figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log', 
+          titleName='Koeffler_BM_CebpE_log', model='GMM')
+
+@
+\begin{figure}[!htp]
+    \centering
+    \subfloat{\includegraphics[width = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp2.pdf}}
+    \subfloat{\includegraphics[width = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp3.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp4.pdf}}
+    \subfloat{\includegraphics[width = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp5.pdf}}
+    \caption{ChIPseq Log-Transformed Peaks Fit with GMMs Ranging from Two to Five Components}
+    \label{fig:FittingChIPGMMLog}
 \end{figure}
 \clearpage
 
@@ -272,6 +303,18 @@ Here, we assess for the possible overfit of our fitting mixture models by compar
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_comp9_empVsModel.pdf}}
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_comp10_empVsModel.pdf}}
     \caption{Comparing Density Estimates: Empirical Vs Gaussian Mixture. Empirical and gaussian density are coloured with black and dashed-red, respectively.}
+    \label{fig:empVsgauss}
+\end{figure}
+\clearpage
+
+\subsection{Comparing Density Estimates: Empirical vs Gaussian Mixture (GMM) on Log-transformed ChIPseq}
+\begin{figure}[!htp]
+    \centering
+    \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp2_empVsModel.pdf}}
+    \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp3_empVsModel.pdf}}
+    \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp4_empVsModel.pdf}}
+    \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp5_empVsModel.pdf}}
+    \caption{Comparing Density Estimates: Empirical Vs Gaussian Mixture on Log Transformed ChIPseq-Data}
     \label{fig:empVsgauss}
 \end{figure}
 \clearpage
@@ -347,6 +390,40 @@ mapply(function(x, model){
     \subfloat{\includegraphics[width = 1.3in, height = 1in]{figs/Koeffler_BM_CebpE_CompFreqTable_10_comp_GMM.pdf}}
     \caption{Component Frequency over Three Different Runs: GMM}
     \label{fig:compFreqGMM}
+\end{figure}      
+
+\subsection{Stability of the Distribution of Component Assignments: GMMs Log-Transformed}
+
+<<compFreqTableGMMLog, warning=FALSE, cache=TRUE, results='hide', echo=FALSE>>=
+compFreq2GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=2, n=3, 
+                                                   model='GMM')
+compFreq2GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=3, n=3, 
+                                                   model='GMM')
+compFreq2GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=4, n=3, 
+                                                   model='GMM')
+compFreq2GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=5, n=3, 
+                                                   model='GMM')
+@
+
+<<compFreqPDFGMMLog, echo=FALSE, results='hide', cache=TRUE>>=
+mapply(function(x, model){
+                  input_ <- paste0('compFreq', x, model, '_Koeffler_BM_CebpE_log')
+                  title_ <- paste0('Koeffler_BM_CebpE_CompFreqTable_', x, '_comp_', model)
+                  output_ <- paste0('figs/', title_, '_log.pdf')
+                  createPDFTable(get(input_), title_, output_)}, seq(2,5), 'GMM')
+
+@
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 1.3in, height = 1in]{figs/Koeffler_BM_CebpE_CompFreqTable_2_comp_GMM_log.pdf}}
+    \subfloat{\includegraphics[width = 1.3in, height = 1in]{figs/Koeffler_BM_CebpE_CompFreqTable_3_comp_GMM_log.pdf}}
+    \subfloat{\includegraphics[width = 1.3in, height = 1in]{figs/Koeffler_BM_CebpE_CompFreqTable_4_comp_GMM_log.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 1.3in, height = 1in]{figs/Koeffler_BM_CebpE_CompFreqTable_5_comp_GMM_log.pdf}}
+    \subfloat{\includegraphics[width = 1.3in, height = 1in]{figs/Koeffler_BM_CebpE_CompFreqTable_6_comp_GMM_log.pdf}}
+    \caption{Component Frequency over Three Different Runs: GMM on Log Transformed ChIPseq}
+    \label{fig:compFreqGMMLog}
 \end{figure}      
 
 \subsubsection{Stability of the Distribution of Component Assignments: NBMs}
@@ -429,6 +506,16 @@ getModelAssessment(GMMs_list_Koeffler_BM_CebpE, max_k = 10,
 
 @
 
+\subsection{GMMs Model Assessment on Log Transformed ChIPseq: AIC and BIC}
+
+<<modelAssessmentGMMLog, results='hide', cache=TRUE>>=
+
+getModelAssessment(GMMs_list_Koeffler_BM_CebpE_log, max_k = 10, 
+                   output_n='figs/Koeffler_BM_CebpE_GMM_ModelAssessment_log',
+                   model='GMM', titleName='Koeffler_BM_CebpE_Log') 
+
+@
+
 \subsection{NBMs Model Assessment: AIC and BIC}
 
 <<modelAssessmentNB, cache=TRUE>>=
@@ -439,6 +526,8 @@ getModelAssessment(NBMs_list_Koeffler_BM_CebpE, max_k = 10,
 \begin{figure}[H]                                                                                                   \centering
     \subfloat{\includegraphics[width = 3in, height = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelAssessment_AICBIC.pdf}}
     \subfloat{\includegraphics[width = 3in, height = 3in]{figs/Koeffler_BM_CebpE_NBM_ModelAssessment_AICBIC.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelAssessment_log_AICBIC.pdf}}
     \caption{Gaussian (left) and Neg.Binomial (right) Mixture Models Assessment: AIC, and BIC.
     Note that BIC introduces the larger penalty term ($\log(n)$) compared with AIC ($2$).
     In this assessment, positive penalty term and negative likelihood are applied. 
@@ -533,9 +622,6 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
 \clearpage
 
 
-
-
-
 \begin{verbatim}
   Filename: chromatinConformation.Rnw
   Working directory: \Sexpr{getwd()} 
@@ -546,7 +632,7 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
 sessionInfo()
 @
 
-<<knitIt, cache=TRUE, message=FALSE, warning=FALSE>>=
+<<knitIt,  message=FALSE, warning=FALSE>>=
 library(knitr)
 purl("componentAnalysis.Rnw" ) # compile to tex
 purl("componentAnalysis.Rnw", documentation = 0) # extract R code only
