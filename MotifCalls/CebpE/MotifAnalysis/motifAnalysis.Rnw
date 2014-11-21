@@ -150,6 +150,48 @@ Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist50kb <-
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb'))
 @
 
+<<biclusteringLog, cache=TRUE>>=
+# filter out the clusters with single peaks only
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_log_dist3kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
+    distance = 3000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist3kb'))
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist5kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
+    distance = 5000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist5kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist8kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
+    distance = 8000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist8kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist20kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
+    distance = 20000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist20kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist50kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
+    distance = 50000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb'))
+@
+
 <<DataExplorePlot, echo=FALSE, results='hide', cache=TRUE>>=
 
 plotCountCluster(Koeffler_BM_CebpE_Bicluster_NBM_comp4_dist3kb$result$local, 
@@ -310,6 +352,66 @@ Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <-
     'result.txt'))
 @
 \clearpage
+
+\section{Centdist Motif Results for Log-Transformed ChIPseq for Group1 and Group4}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 6in, height = 6in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/ComponentAnalysis/figs/Koeffler_BM_CebpE_BoxplotProfile.png}}
+    \caption{Boxplots of ChIP Profiles in 4-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}) and group4 ({\color{blue}Blue})}
+    \label{fig:boxplotProfile}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.png}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_centrimo.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_centrimo.png}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_Centdist.jpg}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_02_Centdist.jpg}}
+    \caption{Heatmaps of ChIP Profiles in 4-component GMM group1 (Top Left), and group4 (Top Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. Below are the motif distributions for CTCF(Left) and CEBPB(Right) discovered by ChIPmeme.}
+    \label{fig:sorted4CompBoxplot}
+\end{figure}
+\clearpage
+
+\subsection{Motif ChipSeq Distribution of CEBPB and CTCF}
+<<>>=
+source('/home/ricky/Rlim/ChromatinConformation/ComponentCalls/ComponentCalls.R')
+
+visualizeBedPeaks(bed_f = paste0(work_dir,                       
+                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                    'Motif/CEBPB_CTCF_Motif.bed'),
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPB_CTCF',
+                    output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPBCTCF',
+                    max_peak=50) 
+
+@
+
+\subsection{Motif ChIPseq Distribution per Groups}
+<<>>=
+CTCF_groups <- read.table(paste0(work_dir,
+                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                'Motif/CTCF_Motif_Groups.bed'))
+CEBPB_groups <- read.table(paste0(work_dir,
+                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                'Motif/CEBPB_Motif_Groups.bed'))
+
+CTCF_groups <- as.data.frame(table(CTCF_groups$V6))
+colnames(CTCF_groups) <- c('Comp', 'Freq')
+CEBPB_groups <- as.data.frame(table(CEBPB_groups$V6))
+colnames(CEBPB_groups) <- c('Comp', 'Freq')
+@
+
+<<ctcfCebp, results='asis', echo=FALSE>>=
+print(xtable(CTCF_groups, 
+      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+print(xtable(CEBPB_groups, 
+      caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+@
+
 
 
 
@@ -655,7 +757,7 @@ The homodimer motif of Cebp: ATTG \_\_ CAAT.\\
 The heterodimer motif of Cebp: TGA \_\_ CAAT.\\
 \\
 
-In our dataset in bone marrow, we found \textbf{\Sexpr{nHomodimer} homodimer sites} and \textbf{\Sexpr{nHeterodimer} heterodimer sites}. The ChIP score distribution for these homo and heterodimer Cebp motif is shown in figure (~\ref{fig:chipseqScoreHomoHeteroCebpMotif}).
+%In our dataset in bone marrow, we found \textbf{\Sexpr{nHomodimer} homodimer sites} and \textbf{\Sexpr{nHeterodimer} heterodimer sites}. The ChIP score distribution for these homo and heterodimer Cebp motif is shown in figure (~\ref{fig:chipseqScoreHomoHeteroCebpMotif}).
 
 \begin{verbatim}
 

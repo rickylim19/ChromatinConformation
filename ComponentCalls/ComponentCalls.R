@@ -431,6 +431,49 @@ visualizeCompAssign <- function(bed_f, chrom, title_f, output_f){
     ggsave(file=output_f, width=15)
 }
 
+visualizeBedPeaks <- function(bed_f, chrom, title_f, output_f, max_peak){
+
+    ####################################################################################################
+    # Returns a pdf file that plots the score (Y-axis) and the genomic location (X-axis)               #
+    #                                                                                                  #
+    # Input:                                                                                           #
+    #  - bed_f: #chr start end name score                                                              #
+    #                                                                                                  #
+    #     chr1    6214409 6216409 CEBPB   48                                                           #
+    #     chr1    6466192 6468192 CTCF    86                                                           #
+    #     chr1    6466192 6468192 CEBPB   86                                                           #
+    #     chr1    7088912 7090912 CEBPB   31                                                           #
+    #     chr1    7108615 7110615 CEBPB   29                                                           #
+    # - chrom: coordinates chromosome you wish to visualize                                            #
+    # - title_f: title of the plot                                                                     #
+    # - output_f: the name of the output, (without the extension, as automatically in pdf)             #
+    #   *Note that we appended _chunk in the output filename*                                          #
+    # - max_peak: maximum number of peaks in each chunk                                                #
+    #                                                                                                  #
+    #                                                                                                  #
+    # >visualizeBedPeaks(bed_f = paste0(work_dir,                                                      #
+    #                   'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',  #
+    #                   'Motif/CEBPB_CTCF_Motif.bed'),                                                 #
+    #                chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPB_CTCF',  #
+    #                output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPBCTCF',            #
+    #                max_peak=50)                                                                      #
+    #                                                                                                  #
+    ####################################################################################################
+
+    range_data <- import(bed_f)
+    chrData <- range_data[seqnames(range_data)==chrom]
+    x <- seq_along(chrData)
+    chrData_chunks <- split(chrData, ceiling(x/max_peak))
+    for (i in 1:length(chrData_chunks)){
+        chrData_chunk <- chrData_chunks[[i]]
+        p <- autoplot(chrData_chunk, xlab=chrom, title=title_f, 
+                        geom='bar', aes(col=name) , alpha=.3) + 
+                        ggtitle(title_f)
+        ggsave(file=paste0(output_f, '_chunk', i,'_', chrom, '.pdf'), width=15)
+    }
+}
+
+
 createPDFTable <- function(tabData, title_tab, output_f){
     
     ####################################################
