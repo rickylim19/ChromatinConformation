@@ -94,6 +94,48 @@ Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist50kb <-
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb'))
 
 
+## ----biclusteringGMMLog, cache=TRUE--------------------------------------
+# filter out the clusters with single peaks only
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_log_dist3kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 3000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist3kb'))
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 5000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist5kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 8000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist8kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 20000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist20kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 50000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb'))
+
+
 ## ----DataExplorePlot, echo=FALSE, results='hide', cache=TRUE-------------
 
 plotCountCluster(Koeffler_BM_CebpE_Bicluster_NBM_comp4_dist3kb$result$local, 
@@ -193,7 +235,7 @@ print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_table,
 # > Output/Koeffler_BM_CebpE_Peaks_1kb.bed
 
 
-## ----CentDistP53---------------------------------------------------------
+## ----CentDist, cache=TRUE------------------------------------------------
 work_dir_centdist = '/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/'
 Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct <- 
     read.delim(paste0(work_dir,'Output/CentDist/',
@@ -203,6 +245,72 @@ Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <-
     read.delim(paste0(work_dir,'Output/CentDist/',
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/',
     'result.txt'))
+
+
+## ------------------------------------------------------------------------
+source('/home/ricky/Rlim/ChromatinConformation/ComponentCalls/ComponentCalls.R')
+
+visualizeBedPeaks(bed_f = paste0(work_dir,                       
+                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                    'Motif/CEBPB_CTCF_Motif.bed'),
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPB_CTCF',
+                    output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPBCTCF',
+                    max_peak=50) 
+
+
+
+## ------------------------------------------------------------------------
+
+CTCF_groups <- read.table(paste0(work_dir,
+                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                'Motif/CTCF_Motif_Groups.bed'))
+CEBPB_groups <- read.table(paste0(work_dir,
+                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                'Motif/CEBPB_Motif_Groups.bed'))
+
+CEBP_CTCF_noDuplicate <- read.table(paste0(work_dir,
+                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                    'Motif/CEBPB_CTCF_Motif_noDuplicates_score.bed'))
+colnames(CEBP_CTCF_noDuplicate) <- c('Chr', 'Start', 'End', 'Motif', 'Score', 'Comp')
+CEBPB_noDuplicate <- subset(CEBP_CTCF_noDuplicate, Motif=='CEBPB')
+CTCF_noDuplicate <- subset(CEBP_CTCF_noDuplicate, Motif=='CTCF')
+
+# total component frequency
+Freq_groups <- read.table(paste0(work_dir,
+                'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'))
+total_freq <- as.data.frame(table(Freq_groups$V4))$Freq
+
+CTCF_noDuplicate <- as.data.frame(table(CTCF_noDuplicate$Comp))
+colnames(CTCF_noDuplicate) <- c('Comp', 'Freq')
+CTCF_noDuplicate$Total <- total_freq
+CTCF_noDuplicate$Percentage <- CTCF_noDuplicate$Freq/CTCF_noDuplicate$Total*100.0
+
+CTCF_groups <- as.data.frame(table(CTCF_groups$V6))
+colnames(CTCF_groups) <- c('Comp', 'Freq')
+CTCF_groups$Total <- total_freq
+CTCF_groups$Percentage <- CTCF_groups$Freq/CTCF_groups$Total*100.0
+
+CEBPB_noDuplicate <- as.data.frame(table(CEBPB_noDuplicate$Comp))
+colnames(CEBPB_noDuplicate) <- c('Comp', 'Freq')
+CEBPB_noDuplicate$Total <- total_freq
+CEBPB_noDuplicate$Percentage <- CEBPB_noDuplicate$Freq/CEBPB_noDuplicate$Total*100.0
+head(CEBPB_noDuplicate)
+
+CEBPB_groups <- as.data.frame(table(CEBPB_groups$V6))
+colnames(CEBPB_groups) <- c('Comp', 'Freq')
+CEBPB_groups$Total <- total_freq
+CEBPB_groups$Percentage <- CEBPB_groups$Freq/CEBPB_groups$Total*100.0
+
+
+## ----uctcfCebp, results='asis', echo=FALSE-------------------------------
+print(xtable(CTCF_groups, 
+      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+print(xtable(CEBPB_groups, 
+      caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+print(xtable(CTCF_noDuplicate, 
+      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+print(xtable(CEBPB_noDuplicate, 
+      caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
 
 
 ## ----engine='bash'-------------------------------------------------------

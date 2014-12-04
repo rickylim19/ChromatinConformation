@@ -16,10 +16,15 @@ source('/home/ricky/Rlim/ChromatinConformation/ComponentCalls/ComponentCalls.R')
 work_dir = '/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/'
 
 
-## ----Dataset-------------------------------------------------------------
+## ----Dataset, cache=TRUE-------------------------------------------------
 Koeffler_BM_CebpE <- read.table(paste0(work_dir, 
                         'Input/KoefflerLab_BM_ChIPseq_CebpE_mm10_q10rmdup_peaks.xls'), 
                         header=T, sep='\t', row.names=10, skip=28)
+head(Koeffler_BM_CebpE)
+log_pileup <- log10(Koeffler_BM_CebpE$pileup)
+Koeffler_BM_CebpE_log <- Koeffler_BM_CebpE
+head(Koeffler_BM_CebpE_log)
+Koeffler_BM_CebpE_log[, 'pileup'] <- log_pileup
 
 p1 <- ggplot(Koeffler_BM_CebpE, aes(x=pileup)) +
         geom_histogram(aes(y = ..density..), fill='#969696', binwidth=25) +
@@ -107,6 +112,10 @@ GMMs_list_Koeffler_BM_CebpE <- fitMMs(X=Koeffler_BM_CebpE$pileup, max_k=10, mode
 
 
 
+## ----FitGMMs_log, results='hide', cache=TRUE-----------------------------
+GMMs_list_Koeffler_BM_CebpE_log <- fitMMs(X=Koeffler_BM_CebpE_log$pileup, max_k=10, model = 'GMM')
+
+
 ## ----fitNB, results='hide', cache=TRUE-----------------------------------
 NBMs_list_Koeffler_BM_CebpE <- fitMMs(X=Koeffler_BM_CebpE$pileup, max_k=10, 'NBM')
 
@@ -122,6 +131,14 @@ NBMs_list_Koeffler_BM_CebpE <- fitMMs(X=Koeffler_BM_CebpE$pileup, max_k=10, 'NBM
 visualizeFitMMs(X=Koeffler_BM_CebpE, MMs_list=GMMs_list_Koeffler_BM_CebpE, 
                 max_k=10, output_n='figs/Koeffler_BM_CebpE_GMM_ModelVisualization', 
                 model = 'GMM', titleName='Koeffler_BM_CebpE') 
+
+
+
+## ----VisualizeFitGMMsLog, echo=FALSE, message=FALSE, cache=TRUE----------
+
+plotFitMM(Koeffler_BM_CebpE_log$pileup, GMMs_list_Koeffler_BM_CebpE_log,
+          output_n='figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log', 
+          titleName='Koeffler_BM_CebpE_log', model='GMM')
 
 
 
@@ -160,6 +177,28 @@ mapply(function(x, model){
                   title_ <- paste0('Koeffler_BM_CebpE_CompFreqTable_', x, '_comp_', model)
                   output_ <- paste0('figs/', title_, '.pdf')
                   createPDFTable(get(input_), title_, output_)}, seq(2,10), 'GMM')
+
+
+
+## ----compFreqTableGMMLog, warning=FALSE, cache=TRUE, results='hide', echo=FALSE----
+compFreq2GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=2, n=3, 
+                                                   model='GMM')
+compFreq3GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=3, n=3, 
+                                                   model='GMM')
+compFreq4GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=4, n=3, 
+                                                   model='GMM')
+compFreq5GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=5, n=3, 
+                                                   model='GMM')
+compFreq6GMM_Koeffler_BM_CebpE_log <- getCompFreqTable(Koeffler_BM_CebpE_log$pileup, k=6, n=3, 
+                                                   model='GMM')
+
+
+## ----compFreqPDFGMMLog, echo=FALSE, results='hide', cache=TRUE-----------
+mapply(function(x, model){
+                  input_ <- paste0('compFreq', x, model, '_Koeffler_BM_CebpE_log')
+                  title_ <- paste0('Koeffler_BM_CebpE_CompFreqTable_', x, '_comp_', model)
+                  output_ <- paste0('figs/', title_, '_log.pdf')
+                  createPDFTable(get(input_), title_, output_)}, seq(2,6), 'GMM')
 
 
 
@@ -205,6 +244,14 @@ getModelAssessment(GMMs_list_Koeffler_BM_CebpE, max_k = 10,
 
 
 
+## ----modelAssessmentGMMLog, results='hide', cache=TRUE-------------------
+
+getModelAssessment(GMMs_list_Koeffler_BM_CebpE_log, max_k = 10, 
+                   output_n='figs/Koeffler_BM_CebpE_GMM_ModelAssessment_log',
+                   model='GMM', titleName='Koeffler_BM_CebpE_Log') 
+
+
+
 ## ----modelAssessmentNB, cache=TRUE---------------------------------------
 getModelAssessment(NBMs_list_Koeffler_BM_CebpE, max_k = 10, 
                    output_n='figs/Koeffler_BM_CebpE_NBM_ModelAssessment',
@@ -215,6 +262,13 @@ getModelAssessment(NBMs_list_Koeffler_BM_CebpE, max_k = 10,
 assignComponentMMs(Koeffler_BM_CebpE, GMMs_list_Koeffler_BM_CebpE, 
                    output_n=paste0(work_dir,
                     'Output/Koeffler_BM_CebpE_GMM_ModelAssignment'), 
+                    model='GMM', sort.comp=TRUE)
+
+
+## ----componentAssignmentGMMlog, cache=TRUE, results='hide'---------------
+assignComponentMMs(Koeffler_BM_CebpE_log, GMMs_list_Koeffler_BM_CebpE_log, 
+                   output_n=paste0(work_dir,
+                    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log'), 
                     model='GMM', sort.comp=TRUE)
 
 
@@ -240,6 +294,11 @@ visualizeCompAssign(bed_f = paste0(work_dir,
                     'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4.bed'),
                     chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4',
                     output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4.pdf')
+# GMM log
+visualizeCompAssign(bed_f = paste0(work_dir,
+                    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_ompSorted4',
+                    output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.pdf')
 
 #NBM
 visualizeCompAssign(bed_f = paste0(work_dir,
@@ -262,6 +321,11 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
                        output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4_Boxplot.pdf')
 
 boxplot_compAssignment(bed_f=paste0(work_dir,
+                       'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+                       title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4',
+                       output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_Boxplot.pdf')
+
+boxplot_compAssignment(bed_f=paste0(work_dir,
                        'Output/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
                        title_f = 'Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4',
                        output_f ='figs/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4_Boxplot.pdf')
@@ -269,11 +333,35 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
 
 
 
+## ----boxplotProfile, cache=TRUE------------------------------------------
+Koeffler_BM_CebpE_group1_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group2_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group3_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group4_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+head(Koeffler_BM_CebpE_group1_compSorted4)[,199:200]
+
+pdf('figs/Koeffler_BM_CebpE_BoxplotProfile.pdf', 
+    useDingbats=FALSE)
+boxplot(Koeffler_BM_CebpE_group1_compSorted4, cex=0.1, col='red', bty='n')
+boxplot(Koeffler_BM_CebpE_group2_compSorted4, cex=0.1, col='green', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group3_compSorted4, cex=0.1, col='yellow', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group4_compSorted4, cex=0.1, col='blue', add=T, bty='n')
+dev.off()
+
+
 ## ------------------------------------------------------------------------
 sessionInfo()
 
 
-## ----knitIt, cache=TRUE, message=FALSE, warning=FALSE--------------------
+## ----knitIt,  message=FALSE, warning=FALSE-------------------------------
 library(knitr)
 purl("componentAnalysis.Rnw" ) # compile to tex
 purl("componentAnalysis.Rnw", documentation = 0) # extract R code only

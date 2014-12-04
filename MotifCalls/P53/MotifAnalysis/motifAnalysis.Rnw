@@ -57,12 +57,61 @@ source('/home/ricky/Rlim/ChromatinConformation/MotifCalls/MotifCalls.R')
 work_dir = '/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/'
 @
 
+\section{Prelude}
+\begin{verbatim}
+    Identifier: NCMLS_SAOS2_P53
+    Experiment: ChIPseq
+    Protein: P53
+    Cell: SAOS2
+    Data Reference: http://www.ncbi.nlm.nih.gov/Traces/sra/?study=SRP001997
+\end{verbatim}
 
-\section{Database-based Motif Discovery: Centdist}
-We run CentDist to search for the occurrances of database motifs (JASPAR and TRANSFAC) \href{biogpu.ddns.comp.nus.edu.sg}{CentDist} on the ChIPseq Peaks indirect and direct clusters.
-In all cluster distance, however the P53 motifs were found in both direct and indirect clusters (in their top 50).\\
+\clearpage
+\section{Group Clustering in 4-Component GMM}
+\subsection{P53 ChIPseq Profile}
+<<boxplotProfile, cache=TRUE, echo=FALSE, results=FALSE>>=
 
-OutputDir for cluster distance of 3kb, 5kb, 20kb and 50kb:
+NCMLS_SAOS2_P53_group1_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Input/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+NCMLS_SAOS2_P53_group2_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Input/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+NCMLS_SAOS2_P53_group3_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Input/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+NCMLS_SAOS2_P53_group4_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Input/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+
+pdf('figs/NCMLS_SAOS2_P53_BoxplotProfile.pdf', 
+    useDingbats=FALSE)
+boxplot(NCMLS_SAOS2_P53_group1_compSorted4, cex=0.1, col='red', bty='n')
+boxplot(NCMLS_SAOS2_P53_group2_compSorted4, cex=0.1, col='green', add=T, bty='n')
+boxplot(NCMLS_SAOS2_P53_group3_compSorted4, cex=0.1, col='yellow', add=T, bty='n')
+boxplot(NCMLS_SAOS2_P53_group4_compSorted4, cex=0.1, col='blue', add=T, bty='n')
+dev.off()
+@
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 4in, height = 3in]{figs/NCMLS_SAOS2_P53_BoxplotProfile.pdf}}
+    \caption{Boxplots of ChIP Profiles in 4-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}) and group4 ({\color{blue}Blue})}
+    \label{fig:boxplotProfile}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 1in, height = 1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 1in, height = 1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.png}}
+    \\
+    \subfloat{\includegraphics[width = 1in, height = 1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 1in, height = 1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.png}}
+    \caption{Heatmaps of ChIP Profiles in 4-component GMM group1 (Top Left), group2 (Top Right), group3 (Below Left), and group4 (Below Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. Image scaled to 51.0 x 7216.0 pixels.}
+    \label{fig:heatMapProfile}
+\end{figure}
+\clearpage
+
+\subsection{Database-based Motif Discovery: Centdist Group Clustering}
 \begin{verbatim}
 /home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/CentDist
 
@@ -71,7 +120,190 @@ sed 's/\_\|\$/-/g' result.txt > tmp
 mv tmp result.txt
 \end{verbatim}
 
-<<CentDistP53>>=
+<<CentDistP53Group, echo=FALSE, cache=TRUE>>=
+NCMLS_SAOS2_ChIPseq_P53_group1_compSorted4_Centdist <- 
+    read.delim(paste0(work_dir,'Output/Centdist/',
+    'NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group1_compSorted4_0.5kb/result.txt'))
+NCMLS_SAOS2_ChIPseq_P53_group2_compSorted4_Centdist <- 
+    read.delim(paste0(work_dir,'Output/Centdist/',
+    'NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group2_compSorted4_0.5kb/result.txt'))
+NCMLS_SAOS2_ChIPseq_P53_group3_compSorted4_Centdist <- 
+    read.delim(paste0(work_dir,'Output/Centdist/',
+    'NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group3_compSorted4_0.5kb/result.txt'))
+NCMLS_SAOS2_ChIPseq_P53_group4_compSorted4_Centdist <- 
+    read.delim(paste0(work_dir,'Output/Centdist/',
+    'NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group4_compSorted4_0.5kb/result.txt'))
+@
+
+\begin{table}[h!]
+  \centering
+    %\multicolumn{2}{c}{Direct}
+    %\cline{1-2}
+    %\cline{2-4}
+  \begin{tabular}{ | m{10cm} | c | }
+    \hline
+    Info & Dist \\ \hline
+
+      %row1
+      \begin{itemize}
+        \item \textbf{Group 1-4 Component GMM}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group1_compSorted4_Centdist[1,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group1_compSorted4_Centdist[1,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group1_compSorted4_Centdist[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group1_compSorted4_0.5kb/V$jaspar_CTCF.png}
+    \end{minipage}
+    \\ \hline
+
+
+      %row2
+      \begin{itemize}
+        \item \textbf{Group 2-4 Component GMM}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group2_compSorted4_Centdist[1,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group2_compSorted4_Centdist[1,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group2_compSorted4_Centdist[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group2_compSorted4_0.5kb/V$jaspar_CTCF.png}
+    \end{minipage}
+    \\ \hline
+
+      %row3
+      \begin{itemize}
+        \item \textbf{Group 3-4 Component GMM}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group3_compSorted4_Centdist[1,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group3_compSorted4_Centdist[1,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group3_compSorted4_Centdist[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group3_compSorted4_0.5kb/V$jaspar_CTCF.png}
+    \end{minipage}
+    \\ \hline
+
+      %row4
+      \begin{itemize}
+        \item \textbf{Group 4-4 Component GMM}
+        \item Name: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group4_compSorted4_Centdist[1,'Name']}
+        \item Binding.Range: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group4_compSorted4_Centdist[1,'Binding.Range']}
+        \item P.value: \Sexpr{NCMLS_SAOS2_ChIPseq_P53_group4_compSorted4_Centdist[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group4_compSorted4_0.5kb/V$jaspar_TP53.png}
+    \end{minipage}
+    \\ \hline
+
+  \end{tabular}
+  \caption{P53 ChIPseq in SAOS2: CentDist Motif Discovery}\label{P53Centdist}
+\end{table}
+\clearpage
+
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group1_compSorted4_0.5kb/V$jaspar_CTCF.png}
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group2_compSorted4_0.5kb/V$jaspar_CTCF.png}
+    \\
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.png}}
+    \\
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group3_compSorted4_0.5kb/V$jaspar_CTCF.png}
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/Centdist/NCMLS_SAOS2_ChIPseq_P53_ModelAssignment_GMM_group4_compSorted4_0.5kb/V$jaspar_TP53.png}
+    \\
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width=1.5in, height=1.5in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/P53/Output/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.png}}
+    \caption{Centdist Motif Distribution Coupled with the ChIPseq Profile. 
+            Group 1 (Top Left), Group 2 (Top Right), Group 3 (Below Left), Group 4 (Below Right).}
+\end{figure}
+
+
+\clearpage
+\subsection{DeNovo Motif Discovery: ChIPMeme}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width=3in, height=3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/MotifAnalysis/figs/CTCF_TP53_TP63_centrimo.png}}
+    \caption{Motifs found by Centrimo-ChipMeme.}
+\end{figure}
+
+<<echo=FALSE, results=FALSE>>=
+CTCF_TP53_TP63_noDuplicate <- read.table(paste0(work_dir, 
+                                    'Output/ChipMeme_NCMLS_SAOS2/',
+                                    'Motifs/CTCF_TP53_TP63_Motif_Groups_noDuplicates.bed'))
+
+colnames(CTCF_TP53_TP63_noDuplicate) <- c('Chr', 'Start', 'End', 'Motif', 'Score', 'Comp')
+CTCF_noDuplicate <- subset(CTCF_TP53_TP63_noDuplicate, Motif=='CTCF')
+TP53_noDuplicate <- subset(CTCF_TP53_TP63_noDuplicate, Motif=='TP53')
+TP63_noDuplicate <- subset(CTCF_TP53_TP63_noDuplicate, Motif=='TP63')
+
+# Total Component Frequency
+Freq_groups <- read.table(paste0(work_dir,
+                    'Output/ChipMeme_NCMLS_SAOS2/',
+                    'Motifs/NCMLS_SAOS2_ChIPseq_P53_GMM_ModelAssignment_log_compSorted4_0.5kb.bed'))
+total_freq <- as.data.frame(table(Freq_groups$V4))$Freq
+
+CTCF_noDuplicate <- as.data.frame(table(CTCF_noDuplicate$Comp))
+colnames(CTCF_noDuplicate) <- c('Comp', 'Freq')
+CTCF_noDuplicate$Total <- total_freq
+CTCF_noDuplicate$Percentage <- CTCF_noDuplicate$Freq/CTCF_noDuplicate$Total*100.0
+
+TP53_noDuplicate <- as.data.frame(table(TP53_noDuplicate$Comp))
+colnames(TP53_noDuplicate) <- c('Comp', 'Freq')
+TP53_noDuplicate$Total <- total_freq
+TP53_noDuplicate$Percentage <- TP53_noDuplicate$Freq/TP53_noDuplicate$Total*100.0
+
+TP63_noDuplicate <- as.data.frame(table(TP63_noDuplicate$Comp))
+colnames(TP63_noDuplicate) <- c('Comp', 'Freq')
+TP63_noDuplicate$Total <- total_freq
+TP63_noDuplicate$Percentage <- TP63_noDuplicate$Freq/TP63_noDuplicate$Total*100.0
+
+
+
+@
+
+<<results='asis', echo=FALSE>>=
+print(xtable(CTCF_noDuplicate, 
+      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+print(xtable(TP53_noDuplicate, 
+      caption='TP53 Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+print(xtable(TP63_noDuplicate, 
+      caption='TP63 Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+@
+\clearpage
+
+\subsection{Summary}
+Group clustering in 4-Component GMM on P53 ChIPseq in SAOS2 discovers:
+\begin{itemize}
+    \item The presence of TP53 and CTCF motifs from JASPAR and TRANSFAC database using \href{biogpu.ddns.comp.nus.edu.sg}{CentDist}.
+    \item TP53 was identified as 1st rank in group 1, whereas CTCF was discovered as 1st rank in group 2, group 3, and group 4.
+    \item Using Chip-meme (centrimo), the distribution of groups in TP53 and CTCF motifs was analyzed. 
+    \item TP53 sites were distributed across the whole groups with nearly similar percentages (Table 2).
+    \item CTCF sites have dense distributions in group 1 (14.33\%), group 2 (19.24\%), and group 3 (15.77\%), and sparse distribution in group 4 with only 2.31\%.
+\end{itemize}
+\clearpage
+
+
+\section{Biclustering: Direct and Indirect}
+\subsection{Database-based Motif Discovery: Centdist Biclustering}
+We run CentDist to search for the occurrances of database motifs (JASPAR and TRANSFAC) \href{biogpu.ddns.comp.nus.edu.sg}{CentDist} on the ChIPseq Peaks indirect and direct clusters.
+
+\begin{verbatim}
+/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/CentDist
+
+# change the '_' and '$' into '-' as these characters were already assigned in LaTeX
+sed 's/\_\|\$/-/g' result.txt > tmp
+mv tmp result.txt
+\end{verbatim}
+
+<<CentDistP53, echo=FALSE>>=
 NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct <- 
     read.delim(paste0(work_dir,'Output/Centdist/',
     'NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_direct/result.txt'))
@@ -81,7 +313,7 @@ NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect <-
 @
 \clearpage
 
-\section{Centdist Motif Results for Direct and Indirect Clusters within 50kb}
+\subsection{Centdist Motif Results for Direct and Indirect Clusters within 50kb}
 \begin{table}[h!]
   \centering
     \multicolumn{2}{c}{Direct}
@@ -355,14 +587,125 @@ NCMLS_SAOS2_ChIPseq_P53_Bicluster_compSorted4_dist50kb_indirect <-
   \end{tabular}
   \caption{P53 ChIPseq in SAOS2: CentDist Motif Discovery}\label{P53Centdist}
 \end{table}
+\clearpage
 
+\subsection{DeNovo Motif Discovery: ChIPmeme}
+
+\begin{verbatim}
+work_dir: /home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/ChipMeme_NCMLS_SAOS2/Motifs
+
+Output from Centrimo:
+    file:///home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/Output/ChipMeme_NCMLS_SAOS2/
+centrimo_out/centrimo.html?show=db2+MA0139.1
+
+Sites selected: TP53.site, TP63.site, and CTCF.site
+
+## add the filename to the 2nd column
+# for i in $(ls *.site);do awk '{print $1``\t''FILENAME}' $i | sed 's/.site//g' > 
+```basename $i .site`.msite''; done
+
+## combine the homo and heterodimer motif sites
+# cat TP53.msite TP63.msite CTCF.msite > TP53_TP63_CTCF.msite
+
+\end{verbatim}
+
+<<TP53TP63CTCF, cache=TRUE, echo=FALSE>>=
+memeMotif_dir=paste0('/home/ricky/Rlim/ChromatinConformation/MotifCalls/P53/',
+                     'Output/ChipMeme_NCMLS_SAOS2/Motifs/')
+
+meme_msite <- read.table(paste0(memeMotif_dir,'TP53_TP63_CTCF.msite' ))
+
+TP53_motif <- meme_msite[meme_msite$V2 == 'TP53', ]
+TP63_motif <- meme_msite[meme_msite$V2 == 'TP63', ]
+CTCF_motif <- meme_msite[meme_msite$V2 == 'CTCF', ]
+
+peak_0.5kb <- read.table(paste0(work_dir, 
+                                'Input/NCMLS_SAOS2_ChIPseq_P53_Peaks_0.5kb.bed'))
+colnames(peak_0.5kb) <- c('chr', 'start', 'end', 'score')
+
+TP53_score <- getPeakScore(TP53_motif, peak_0.5kb)
+TP63_score <- getPeakScore(TP63_motif, peak_0.5kb)
+CTCF_score <- getPeakScore(CTCF_motif, peak_0.5kb)
+allmotif_score <- getPeakScore(meme_msite, peak_0.5kb)
+
+colnames(TP53_score) <- c('chr', 'start', 'end', 'id', 'score')
+colnames(TP63_score) <- c('chr', 'start', 'end', 'id', 'score')
+colnames(CTCF_score) <- c('chr', 'start', 'end', 'id', 'score')
+colnames(allmotif_score) <- c('chr', 'start', 'end', 'id', 'score')
+
+
+@
+
+<<plotTP53TP63CTCF, cache=TRUE, results='hide', echo=FALSE>>=
+
+p <- ggplot(TP53_score, aes(x=score))+ 
+        geom_histogram(aes(y = ..density..), binwidth=1, fill='#969696') + 
+        geom_line(stat='density', alpha=0.6, size=1.5) + 
+        ggtitle('ChIPseq Score Distribution of TP53 Motif')
+ggsave(file='figs/NCMLS_SAOS2_ChIPseq_P53_Score_TP53Motif.pdf')
+
+p <- ggplot(TP63_score, aes(x=score))+ 
+        geom_histogram(aes(y = ..density..), binwidth=1, fill='#969696') + 
+        geom_line(stat='density', alpha=0.6, size=1.5) + 
+        ggtitle('ChIPseq Score Distribution of TP63 Motif')
+ggsave(file='figs/NCMLS_SAOS2_ChIPseq_P63_Score_TP53Motif.pdf')
+
+p <- ggplot(CTCF_score, aes(x=score))+ 
+        geom_histogram(aes(y = ..density..), binwidth=1, fill='#969696') + 
+        geom_line(stat='density', alpha=0.6, size=1.5) + 
+        ggtitle('ChIPseq Score Distribution of CTCF Motif')
+ggsave(file='figs/NCMLS_SAOS2_ChIPseq_CTCF_Score_TP53Motif.pdf')
+
+p <- ggplot(allmotif_score, aes(score, colour=id, group=id)) +
+        geom_density()  
+ggsave(file='figs/NCMLS_SAOS2_ChIPseq_Allmotif_Score_TP53Motif.pdf')
+
+@
+\begin{figure}[!htp]
+    \centering
+    \subfloat[TP53]{\includegraphics[width=5in, height=2in]{figs/TP53.png}}
+    \\
+    \subfloat[TP63]{\includegraphics[width = 5in, height = 2in]{figs/TP63.png}}
+    \\
+    \subfloat[CTCF]{\includegraphics[width = 5in, height = 2in]{figs/CTCF.png}}
+    \caption{Motif Logos of TP53, TP63, and CTCF.}
+    \label{fig:chipseqScoreMeme}
+\end{figure}
+
+\begin{figure}[!htp]
+    \centering
+    \subfloat{\includegraphics[width = 3in, height = 3in]{figs/NCMLS_SAOS2_ChIPseq_P53_Score_TP53Motif.pdf}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{figs/NCMLS_SAOS2_ChIPseq_P63_Score_TP53Motif.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{figs/NCMLS_SAOS2_ChIPseq_CTCF_Score_TP53Motif.pdf}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{figs/NCMLS_SAOS2_ChIPseq_Allmotif_Score_TP53Motif.pdf}}
+    \caption{Distribution of ChIPseq Scores over TP53, TP63, and CTCF.}
+    \label{fig:chipseqScoreMeme}
+\end{figure}
+\clearpage
+
+
+\section{Literature Studies for P53 and CTCF}
+The studies were carried out using PubMed via a webapp, pubmedylicious. 
+The search term was P53 And Ctcf
+The result of this studies are presented \href{https://pubmedylicious.appspot.com/result/5758531089203200}{here.}
+Following the result, the relevant functional interaction between P53 and CTCF in a complex was extracted.
+Here the 5 papers that were selected.
+
+\begin{itemize}
+    \item \url{http://www.ncbi.nlm.nih.gov/pubmed/12524457}
+    \item \url{http://www.ncbi.nlm.nih.gov/pubmed/15543560}
+    \item \url{http://www.ncbi.nlm.nih.gov/pubmed/21814038}
+    \item \url{http://www.ncbi.nlm.nih.gov/pubmed/20101205}
+    \item \url{http://www.ncbi.nlm.nih.gov/pubmed/22754359}
+\end{itemize}
 
 \section{Metainfo}
 <<>>=
 sessionInfo()
 @
 
-<<knitIt,include=FALSE, cache=TRUE, results='hide', message=FALSE, warning=FALSE>>=
+<<knitIt,cache=TRUE, include=FALSE, results='hide', message=FALSE, warning=FALSE>>=
 library(knitr)
 purl("motifAnalysis.Rnw" ) # compile to tex
 purl("motifAnalysis.Rnw", documentation = 0) # extract R code only
