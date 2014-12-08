@@ -4,7 +4,8 @@
 
 - ReadAligns `*.SRA -> *.bam` 
  
-    ### Aligning the ChIPseq reads with the ref.genome using bowtie2
+    - Aligning the ChIPseq reads with the ref.genome using bowtie2
+    
     getBamFromSRA 
     Usage -c [no.core] -a [annot.file] -l [list.file] -i [input_dir] -o [output_dir]
     [no.core]: for parallel processing
@@ -17,7 +18,8 @@
 
 - PeakCalls `*.bam -> *.xls`
     
-    ### Calling ChIPseq Peaks using macs2
+    - Calling ChIPseq Peaks using macs2
+     
     macsPeakCalling
     genome for human: hs and for mouse: mm
     macsPeakCalling -c 4 -g hs -i Input/bam -o Output/macs 2> log/macsPeakCall.txt
@@ -26,11 +28,11 @@
     
 - ComponentCalls
 
-    ### Fitting the ChIPseq Peak Counts with Mixture Models (GMM AND/OR NBM) using R Code `ComponentCalls.R`
-    ### The R analysis is at ComponentAnalysis/
+    - Fitting the ChIPseq Peak Counts with Mixture Models (GMM AND/OR NBM) using R Code `ComponentCalls.R`
+    - The R analysis is at ComponentAnalysis/
     
 - MotifCalls
 
-    ### Using Centdist for motif database discovery
-    ### Using ChIP-meme for DeNovo motif discovery
-    ### Using rsat-peak-motifs for DeNovo motif discovery
+    - Using Centdist for motif database discovery
+    - Using ChIP-meme for DeNovo motif discovery
+    - Using rsat-peak-motifs for DeNovo motif discovery
