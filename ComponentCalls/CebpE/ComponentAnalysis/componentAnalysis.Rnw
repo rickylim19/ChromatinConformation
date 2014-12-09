@@ -56,18 +56,17 @@ source('/home/ricky/Rlim/ChromatinConformation/ComponentCalls/ComponentCalls.R')
 work_dir = '/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/'
 @
 
+\clearpage
 \section{Load Dataset}
 Proof-of-concept: We used ChIP-seq peak signals of CebpE in bone marrow cells from Koeffler's Lab.
-Here is the quick insight on Cebp Protein from \href{https://pubmedylicious.appspot.com/result/564730861610598://pubmedylicious.appspot.com/result/5073520312713216}{Pubmedylicious}.
+Here is the quick insight on Cebp Protein from \href{https://pubmedylicious.appspot.com/result/5073520312713216}{Pubmedylicious}.
 
-<<Dataset, cache=TRUE>>=
+<<Dataset, echo=FALSE, cache=TRUE>>=
 Koeffler_BM_CebpE <- read.table(paste0(work_dir, 
                         'Input/KoefflerLab_BM_ChIPseq_CebpE_mm10_q10rmdup_peaks.xls'), 
                         header=T, sep='\t', row.names=10, skip=28)
-head(Koeffler_BM_CebpE)
 log_pileup <- log10(Koeffler_BM_CebpE$pileup)
 Koeffler_BM_CebpE_log <- Koeffler_BM_CebpE
-head(Koeffler_BM_CebpE_log)
 Koeffler_BM_CebpE_log[, 'pileup'] <- log_pileup
 
 p1 <- ggplot(Koeffler_BM_CebpE, aes(x=pileup)) +
@@ -92,16 +91,142 @@ ggsave('figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf', p2)
 #p <- arrangeGrob(p1,p2, ncol=2)
 #ggsave('figs/Koeffler_BM_CebpE_CountChipSeqPeaks.pdf', p)
 
-
 @
 
-\clearpage
 \begin{figure}[!htbp]
-    \includegraphics[width=7in, height=4in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks.pdf}
+    \includegraphics[width=5in, height=2.5in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks.pdf}
     \\
-    \includegraphics[width=7in, height=4in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf}
+    \includegraphics[width=5in, height=2.5in]{figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf}
     \caption{Distibution of ChIPseq Peak Pileup Scores.}
     \label{fig:DistributionChipPeak}
+\end{figure}
+\clearpage
+
+\subsection{Check the Normality after Log Transformation}
+<<qqplot, echo=FALSE, cache=TRUE>>=
+pdf('figs/Koeffler_BM_CebpE_log_qqplot.pdf', 
+    useDingbats=FALSE)
+Koeffler_BM_CebpE_log_samples <- sample(Koeffler_BM_CebpE_log$pileup, 1000)
+qqnorm(Koeffler_BM_CebpE_log_samples,
+       main='Koeffler_BM_CebpE-LogTransformed',
+       xlab='Expected Normal',
+       ylab='Observed ChIPseq Score')
+qqline(Koeffler_BM_CebpE_log_samples)
+mtext('N=1000')
+dev.off()
+
+pdf('figs/Koeffler_BM_CebpE_qqplot.pdf', 
+    useDingbats=FALSE)
+Koeffler_BM_CebpE_samples <- sample(Koeffler_BM_CebpE$pileup, 1000)
+qqnorm(Koeffler_BM_CebpE_samples,
+       main='Koeffler_BM_Cebpe-NonLogTransformed',
+       xlab='Expected Normal',
+       ylab='Observed ChIPseq Score')
+qqline(Koeffler_BM_CebpE_samples)
+dev.off()
+@
+
+\begin{figure}[!htbp]
+    \includegraphics[width=3in, height=4in]{figs/Koeffler_BM_CebpE_qqplot.pdf}
+    \includegraphics[width=3in, height=4in]{figs/Koeffler_BM_CebpE_log_qqplot.pdf}
+    \caption{Check Normality of ChIPseq Peak Scores}
+    \label{fig:qqplotChipPeak}
+\end{figure}
+
+\clearpage
+\section{CebpE Profile}
+\subsection{4 Component-GMM on Log Transformed}
+<<boxplotProfile, cache=TRUE, echo=FALSE>>=
+Koeffler_BM_CebpE_group1_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group2_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group3_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group4_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+#head(Koeffler_BM_CebpE_group1_compSorted4)[,199:200]
+
+pdf('figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted4.pdf', 
+    useDingbats=FALSE)
+boxplot(Koeffler_BM_CebpE_group1_compSorted4, cex=0.1, col='red', bty='n')
+boxplot(Koeffler_BM_CebpE_group2_compSorted4, cex=0.1, col='green', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group3_compSorted4, cex=0.1, col='yellow', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group4_compSorted4, cex=0.1, col='blue', add=T, bty='n')
+dev.off()
+
+@
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 6in, height = 4in]{figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted4.pdf}}
+    \caption{Boxplots of ChIP Profiles in 4-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}) and group4 ({\color{blue}Blue})}
+    \label{fig:boxplotProfile}
+\end{figure}
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.png}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.png}}
+    \caption{Heatmaps of ChIP Profiles in 4-component GMM group1 (Top Left), group2 (Top Right), group3 (Below Left), and group4 (Below Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. }
+    \label{fig:sorted4CompBoxplot}
+\end{figure}
+\clearpage
+
+\subsection{5 Component-GMM on Log-Transformed}
+<<boxplotProfilecompSorted5, cache=TRUE, echo=FALSE>>=
+Koeffler_BM_CebpE_group1_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group2_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group3_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group4_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group5_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group5_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+
+pdf('figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted5.pdf', 
+    useDingbats=FALSE)
+boxplot(Koeffler_BM_CebpE_group1_compSorted5, cex=0.1, col='red', bty='n')
+boxplot(Koeffler_BM_CebpE_group2_compSorted5, cex=0.1, col='green', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group3_compSorted5, cex=0.1, col='yellow', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group4_compSorted5, cex=0.1, col='blue', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group5_compSorted5, cex=0.1, col='cyan', add=T, bty='n')
+dev.off()
+
+@
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 6in, height = 4in]{figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted5.pdf}}
+    \caption{Boxplots of ChIP Profiles in 5-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}), group4 ({\color{blue}Blue}), and group5 ({\color{cyan}Cyan}).}
+    \label{fig:boxplotProfile}
+\end{figure}
+\clearpage
+
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 2in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted5_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 2in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted5_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 2in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted5_ProfileMatrix.png}}
+    \\
+    \subfloat{\includegraphics[width = 2in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted5_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 2in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group5_compSorted5_ProfileMatrix.png}}
+    \caption{Heatmaps of ChIP Profiles in 5-component GMM group1 (Top Left), group2 (middle), group3 (Top Right), group4 (Below Left), and group5 (Below Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. }
+    \label{fig:sorted5CompBoxplot}
 \end{figure}
 \clearpage
 
@@ -109,20 +234,23 @@ ggsave('figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf', p2)
 Here, we attempt to fit ChIP-seq peaks with Normal, and Negative Binomial distributions. 
 Figure ~\ref{fig:modelFitting} demonstrates that Negative Binomial distribution provides better fit with higher loglik (-4978.32), compared to normal distribution with lower loglik of -5429.51.   
 
-<<ModelFits, cache=TRUE>>=
+<<ModelFits, cache=TRUE, echo=FALSE>>=
 library(MASS)
 
 set.seed(123)
 chip_data <- sort(sample(Koeffler_BM_CebpE$pileup, 1000))
+logchip_data <- sort(sample(Koeffler_BM_CebpE_log$pileup, 1000))
 n <- length(chip_data)
 
 # fitting with models
 normal.par <- fitdistr(chip_data, 'normal')
+lognormal.par <- fitdistr(logchip_data, 'normal')
 poisson.par <- fitdistr(chip_data, 'Poisson')
 negbi.par <- fitdistr(chip_data, 'negative binomial')
 
 # counts estimates generated by models
 normal.estimate <- rnorm(n, normal.par$estimate)
+lognormal.estimate <- rnorm(n, lognormal.par$estimate)
 poisson.estimate <- rpois(n, poisson.par$estimate)
 negbi.estimate <- rnbinom(n, size=negbi.par$estimate['size'], mu=negbi.par$estimate['mu'])
 @
@@ -132,18 +260,29 @@ pdf('figs/Koeffler_BM_CebpE_normalModel.pdf',
     useDingbats=FALSE)
 plot(chip_data, sort(normal.estimate),
      xlim = range(1:100), ylim = range(1:100), pch = 20,
-     xlab = 'Emperical ChIPseq PileUp', 
+     xlab = 'Empirical ChIPseq PileUp', 
      ylab = 'Model Estimates', 
      main = 'ChIPseq Counts Modeled with Normal', bty='n')
 abline(0,1, col='red')
 legend('topright', paste('loglik: ', round(normal.par$loglik, 2)), bty='n')
 dev.off()
 
+pdf('figs/Koeffler_BM_CebpE_normalModel_log.pdf', 
+    useDingbats=FALSE)
+plot(logchip_data, sort(lognormal.estimate),
+     xlim = c(1.8,2), ylim =c(1.8,2), pch = 20,
+     xlab = 'Empirical Log ChIPseq PileUp', 
+     ylab = 'Model Estimates', 
+     main = 'ChIPseq Counts Modeled with Normal', bty='n')
+abline(0,1, col='red')
+legend('topright', paste('loglik: ', round(lognormal.par$loglik, 2)), bty='n')
+dev.off()
+
 pdf('figs/Koeffler_BM_CebpE_poissonModel.pdf', 
     useDingbats=FALSE)
 plot(chip_data, sort(poisson.estimate),
      xlim = range(1:100), ylim = range(1:100), pch = 20,
-     xlab = 'Emperical ChIPseq PileUp', 
+     xlab = 'empirical ChIPseq PileUp', 
      ylab = 'Model Estimates', 
      main = 'ChIPseq Counts Modeled with Poisson', bty='n')
 abline(0,1, col='red')
@@ -155,7 +294,7 @@ pdf('figs/Koeffler_BM_CebpE_negBinomModel.pdf',
     useDingbats=FALSE)
 plot(chip_data, sort(negbi.estimate),
      xlim = range(1:100), ylim = range(1:100), pch = 20,
-     xlab = 'Emperical ChIPseq PileUp', 
+     xlab = 'empirical ChIPseq PileUp', 
      ylab = 'Model Estimates', 
      main = 'ChIPseq Counts Modeled with Neg.Binomial', bty='n')
 abline(0,1, col='red')
@@ -166,6 +305,7 @@ dev.off()
 \begin{figure}[!htp]
     \centering
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_normalModel.pdf}}
+    %\subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_normalModel_log.pdf}}
     %\subfloat{\includegraphics[width = 2in]{ComponentCalls/CebpE/Output/Plots/Koeffler_BM_CebpE_poissonModel.pdf}}
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_negBinomModel.pdf}}
     \caption{Models Fitting: normal, and neg.binomial. 
@@ -259,7 +399,7 @@ plotFitMM(Koeffler_BM_CebpE_log$pileup, GMMs_list_Koeffler_BM_CebpE_log,
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp8.pdf}}
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp9.pdf}}
     \subfloat{\includegraphics[width = 2in]{figs/Koeffler_BM_CebpE_GMM_ModelVisualization_log_comp10.pdf}}
-    \caption{ChIPseq Log-Transformed Peaks Fit with GMMs Ranging from Two to Five Components}
+    \caption{ChIPseq Log-Transformed Peaks Fit with GMMs Ranging from Two to Ten Components}
     \label{fig:FittingChIPGMMLog}
 \end{figure}
 \clearpage
@@ -292,8 +432,8 @@ visualizeFitMMs(X=Koeffler_BM_CebpE, MMs_list=NBMs_list_Koeffler_BM_CebpE,
 \end{figure}
 \clearpage
 
-\section{Emperical vs Estimate Distribution}
-Here, we assess for the possible overfit of our fitting mixture models by comparing the emperical and overal estimate distribution from the mixture models.
+\section{empirical vs Estimate Distribution}
+Here, we assess for the possible overfit of our fitting mixture models by comparing the empirical and overal estimate distribution from the mixture models.
 
 \subsection{Comparing Density Estimates: Empirical vs Gaussian Mixture (GMM)}
 \begin{figure}[!htp]
@@ -551,6 +691,38 @@ getModelAssessment(NBMs_list_Koeffler_BM_CebpE, max_k = 10,
 \end{figure}
 \clearpage
 
+\section{Cross-Validation}
+<<crossValModelSelection, cache=TRUE>>=
+
+crossVal_loglikes_normal <- crossVal_MixModelSelection(Koeffler_BM_CebpE$pileup, 2:10)
+crossVal_loglikes_lognormal <- crossVal_MixModelSelection(Koeffler_BM_CebpE_log$pileup, 2:10)
+
+@
+
+<<plotCrossValModelSelection, cache=TRUE, echo=FALSE>>=
+pdf('figs/Koeffler_BM_CebpE_CrossvalModelSelection.pdf', 
+    useDingbats=FALSE)
+plot(x = 1:10, y= crossVal_loglikes_normal, 
+     xlab='Number of Components', ylab='Log-Likehood on Testing Data',
+     main='Nontransformed ChIPseq')
+dev.off()
+
+pdf('figs/Koeffler_BM_CebpE_CrossvalModelSelection_log.pdf', 
+    useDingbats=FALSE)
+plot(x = 1:10, y= crossVal_loglikes_lognormal, 
+     xlab='Number of Components', ylab='Log-Likehood on Testing Data',
+     main='Log-Transformed ChIPseq')
+dev.off()
+@
+
+\begin{figure}[H]                                                                                                   \centering
+    \subfloat{\includegraphics[width = 5in, height = 3in]{figs/Koeffler_BM_CebpE_CrossvalModelSelection.pdf}}
+    \subfloat{\includegraphics[width = 5in, height = 3in]{figs/Koeffler_BM_CebpE_CrossvalModelSelection_log.pdf}}
+    \caption{Log-likelihoods of different number of components of gaussian mixture models, fit to a random half of the data for training, and tested on the other half of the data for testing.}
+    \label{fig:ModelCrossValidation}
+\end{figure}
+\clearpage
+
 \section{Component Assignment by Mixture Models}
 \subsection{Component Assignment to ChIP-seq Peaks}
 
@@ -560,6 +732,7 @@ assignComponentMMs(Koeffler_BM_CebpE, GMMs_list_Koeffler_BM_CebpE,
                     'Output/Koeffler_BM_CebpE_GMM_ModelAssignment'), 
                     model='GMM', sort.comp=TRUE)
 @
+
 
 <<componentAssignmentGMMlog, cache=TRUE, results='hide'>>=
 assignComponentMMs(Koeffler_BM_CebpE_log, GMMs_list_Koeffler_BM_CebpE_log, 
@@ -577,7 +750,7 @@ assignComponentMMs(Koeffler_BM_CebpE, NBMs_list_Koeffler_BM_CebpE,
 
 \section{Visualization Component Assignment}
 \subsection{Visualization Component Assignment}
-Here, the sorted-5-component GMM and NBM (Figure ~\ref{fig:Sorted4CompGenomicLocation}) are visualized on chr14.
+Here, the sorted-component GMM and NBM (Figure ~\ref{fig:SortedCompGenomicLocation}) are visualized on chr14.
 
 <<VisualizeCompAssign, echo=FALSE, results='hide',cache=TRUE, include=FALSE>>=
 
@@ -597,8 +770,12 @@ visualizeCompAssign(bed_f = paste0(work_dir,
 # GMM log
 visualizeCompAssign(bed_f = paste0(work_dir,
                     'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_ompSorted4',
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4',
                     output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.pdf')
+visualizeCompAssign(bed_f = paste0(work_dir,
+                    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5',
+                    output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.pdf')
 
 #NBM
 visualizeCompAssign(bed_f = paste0(work_dir,
@@ -609,19 +786,21 @@ visualizeCompAssign(bed_f = paste0(work_dir,
 @
 \begin{figure}[H]
     \centering
-    \subfloat{\includegraphics[width = 7in, height = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4.pdf}}
+    \subfloat{\includegraphics[width = 7in, height = 2.25in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4.pdf}}
     \\
-    \subfloat{\includegraphics[width = 7in, height = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.pdf}}
+    \subfloat{\includegraphics[width = 7in, height = 2.25in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.pdf}}
     \\
-    \subfloat{\includegraphics[width = 7in, height = 3in]{figs/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.pdf}}
-    \caption{Sorted-4-Component GMM (left), log-GMM (middle) and NBM (right) assignment on Chr14.}
-    \label{fig:Sorted4CompGenomicLocation}
+    \subfloat{\includegraphics[width = 7in, height = 2.25in]{figs/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 7in, height = 2.25in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.pdf}}
+    \caption{Mixture-4-Component GMM, log-GMM, NBM, and 5-Component log-GMM assignment on Chr14.}
+    \label{fig:SortedCompGenomicLocation}
 \end{figure}
 \clearpage
 
 \section{Score Distribution of Component Assignments}
 
-The score distribution of 5-component GMM and NBM are shown as boxplots (Figure ~\ref{fig:sorted5CompBoxplot})
+The score distribution of mixture-component GMM and NBM are shown as boxplots (Figure ~\ref{fig:sortedCompBoxplot})
 
 <<StatComponentAssignment, echo=FALSE, results='hide', message=FALSE, cache=TRUE>>=
 
@@ -635,10 +814,17 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
                        title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4',
                        output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4_Boxplot.pdf')
 
+# 4-component
 boxplot_compAssignment(bed_f=paste0(work_dir,
                        'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
                        title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4',
                        output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_Boxplot.pdf')
+
+# 5-component
+boxplot_compAssignment(bed_f=paste0(work_dir,
+                       'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+                       title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5',
+                       output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5_Boxplot.pdf')
 
 boxplot_compAssignment(bed_f=paste0(work_dir,
                        'Output/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
@@ -649,59 +835,15 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
 @
 \begin{figure}[H]
     \centering
-    \subfloat{\includegraphics[width = 2in, height = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4_Boxplot.pdf}}
-    \subfloat{\includegraphics[width = 2in, height = 3in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_Boxplot.pdf}}
-    \subfloat{\includegraphics[width = 2in, height = 3in]{figs/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4_Boxplot.pdf}}
-    \caption{Boxplots of ChIP Peak Scores clustered in 4-component GMM (left), log-GMM(middle),and NBM (right)}
-    \label{fig:sorted4CompBoxplot}
-\end{figure}
-\clearpage
-
-\section{CebpE Profile}
-<<boxplotProfile, cache=TRUE>>=
-Koeffler_BM_CebpE_group1_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-Koeffler_BM_CebpE_group2_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-Koeffler_BM_CebpE_group3_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-Koeffler_BM_CebpE_group4_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-head(Koeffler_BM_CebpE_group1_compSorted4)[,199:200]
-
-pdf('figs/Koeffler_BM_CebpE_BoxplotProfile.png', 
-    useDingbats=FALSE)
-boxplot(Koeffler_BM_CebpE_group1_compSorted4, cex=0.1, col='red', bty='n')
-boxplot(Koeffler_BM_CebpE_group2_compSorted4, cex=0.1, col='green', add=T, bty='n')
-boxplot(Koeffler_BM_CebpE_group3_compSorted4, cex=0.1, col='yellow', add=T, bty='n')
-boxplot(Koeffler_BM_CebpE_group4_compSorted4, cex=0.1, col='blue', add=T, bty='n')
-dev.off()
-@
-\clearpage
-\begin{figure}[H]
-    \centering
-    \subfloat{\includegraphics[width = 6in, height = 6in]{figs/Koeffler_BM_CebpE_BoxplotProfile.pdf}}
-    \caption{Boxplots of ChIP Profiles in 4-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}) and group4 ({\color{blue}Blue})}
-    \label{fig:boxplotProfile}
-\end{figure}
-\clearpage
-
-\begin{figure}[H]
-    \centering
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.png}}
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 3in, height = 2.25in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4_Boxplot.pdf}}
+    \subfloat{\includegraphics[width = 3in, height = 2.25in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_Boxplot.pdf}}
     \\
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.png}}
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.png}}
-    \caption{Heatmaps of ChIP Profiles in 4-component GMM group1 (Top Left), group2 (Top Right), group3 (Below Left), and group4 (Below Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. }
-    \label{fig:sorted4CompBoxplot}
+    \subfloat{\includegraphics[width = 3in, height = 2.25in]{figs/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4_Boxplot.pdf}}
+    \subfloat{\includegraphics[width = 3in, height = 2.25in]{figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5_Boxplot.pdf}}
+    \caption{Boxplots of ChIP Peak Scores.}
+    \label{fig:sortedCompBoxplot}
 \end{figure}
 \clearpage
-
 
 
 \begin{verbatim}
@@ -714,7 +856,7 @@ dev.off()
 sessionInfo()
 @
 
-<<knitIt,  message=FALSE, warning=FALSE>>=
+<<knitIt, message=FALSE, warning=FALSE>>=
 library(knitr)
 purl("componentAnalysis.Rnw" ) # compile to tex
 purl("componentAnalysis.Rnw", documentation = 0) # extract R code only

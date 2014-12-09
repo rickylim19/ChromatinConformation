@@ -103,6 +103,42 @@ dnormalmix <- function(x,mixture,log=FALSE) {
     return(d)
 }
 
+# Log likelihood function for a Gaussian mixture, potentially on new data
+loglike.normalmix <- function(x,mixture) {
+  loglike <- dnormalmix(x,mixture,log=TRUE)
+  return(sum(loglike))
+}
+
+crossVal_MixModelSelection <- function(X, comp.num){
+
+    ##################################################################################
+    # Return the list of loglikes                                                    #
+    # loglikes returned from fitting a model using half of the data (training data)  #
+    #   and the other half(test data) to test the fitted model                       #
+    #                                                                                #
+    # >crossVal_MixModelSelection(Koeffler_BM_CebpE$pileup, 2:10)                    #
+    #                                                                                #
+    ##################################################################################
+
+    n <- length(X)
+    data.points <- 1:n
+    data.points <- sample(data.points)
+    train <- data.points[1:floor(n/2)]
+    test <- data.points[-(1:floor(n/2))]
+    candidate.component.numbers <- comp.num
+    loglikes <- vector(length=1+length(candidate.component.numbers))
+    # k=1 needs special handling
+    mu <- mean(X[train]) # MLE of mean
+    sigma <- sd(X[train])*sqrt((n-1)/n) # MLE of standard deviation
+    loglikes[1] <- sum(dnorm(X[test],mu,sigma,log=TRUE))
+    for (k in candidate.component.numbers) {
+        mixture <- normalmixEM(X[train],k=k,maxit=5000)
+        loglikes[k] <- loglike.normalmix(X[test],mixture=mixture)
+    }
+    return(loglikes)
+}
+
+
 
 visualizeFitMMs <- function(X, MMs_list, max_k, output_n, model='GMM', titleName){
 

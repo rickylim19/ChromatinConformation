@@ -16,14 +16,12 @@ source('/home/ricky/Rlim/ChromatinConformation/ComponentCalls/ComponentCalls.R')
 work_dir = '/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/'
 
 
-## ----Dataset, cache=TRUE-------------------------------------------------
+## ----Dataset, echo=FALSE, cache=TRUE-------------------------------------
 Koeffler_BM_CebpE <- read.table(paste0(work_dir, 
                         'Input/KoefflerLab_BM_ChIPseq_CebpE_mm10_q10rmdup_peaks.xls'), 
                         header=T, sep='\t', row.names=10, skip=28)
-head(Koeffler_BM_CebpE)
 log_pileup <- log10(Koeffler_BM_CebpE$pileup)
 Koeffler_BM_CebpE_log <- Koeffler_BM_CebpE
-head(Koeffler_BM_CebpE_log)
 Koeffler_BM_CebpE_log[, 'pileup'] <- log_pileup
 
 p1 <- ggplot(Koeffler_BM_CebpE, aes(x=pileup)) +
@@ -50,21 +48,99 @@ ggsave('figs/Koeffler_BM_CebpE_CountChipSeqPeaks_log.pdf', p2)
 
 
 
+## ----qqplot, echo=FALSE, cache=TRUE--------------------------------------
+pdf('figs/Koeffler_BM_CebpE_log_qqplot.pdf', 
+    useDingbats=FALSE)
+Koeffler_BM_CebpE_log_samples <- sample(Koeffler_BM_CebpE_log$pileup, 1000)
+qqnorm(Koeffler_BM_CebpE_log_samples,
+       main='Koeffler_BM_CebpE-LogTransformed',
+       xlab='Expected Normal',
+       ylab='Observed ChIPseq Score')
+qqline(Koeffler_BM_CebpE_log_samples)
+mtext('N=1000')
+dev.off()
 
-## ----ModelFits, cache=TRUE-----------------------------------------------
+pdf('figs/Koeffler_BM_CebpE_qqplot.pdf', 
+    useDingbats=FALSE)
+Koeffler_BM_CebpE_samples <- sample(Koeffler_BM_CebpE$pileup, 1000)
+qqnorm(Koeffler_BM_CebpE_samples,
+       main='Koeffler_BM_Cebpe-NonLogTransformed',
+       xlab='Expected Normal',
+       ylab='Observed ChIPseq Score')
+qqline(Koeffler_BM_CebpE_samples)
+dev.off()
+
+
+## ----boxplotProfile, cache=TRUE, echo=FALSE------------------------------
+Koeffler_BM_CebpE_group1_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group2_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group3_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group4_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+#head(Koeffler_BM_CebpE_group1_compSorted4)[,199:200]
+
+pdf('figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted4.pdf', 
+    useDingbats=FALSE)
+boxplot(Koeffler_BM_CebpE_group1_compSorted4, cex=0.1, col='red', bty='n')
+boxplot(Koeffler_BM_CebpE_group2_compSorted4, cex=0.1, col='green', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group3_compSorted4, cex=0.1, col='yellow', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group4_compSorted4, cex=0.1, col='blue', add=T, bty='n')
+dev.off()
+
+
+
+## ----boxplotProfilecompSorted5, cache=TRUE, echo=FALSE-------------------
+Koeffler_BM_CebpE_group1_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group2_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group3_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group4_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+Koeffler_BM_CebpE_group5_compSorted5 <- read.csv(sep='\t',paste0(work_dir, 
+    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group5_compSorted5_ProfileMatrix.txt'),
+    header=TRUE, row.names=1, check.names=F)
+
+pdf('figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted5.pdf', 
+    useDingbats=FALSE)
+boxplot(Koeffler_BM_CebpE_group1_compSorted5, cex=0.1, col='red', bty='n')
+boxplot(Koeffler_BM_CebpE_group2_compSorted5, cex=0.1, col='green', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group3_compSorted5, cex=0.1, col='yellow', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group4_compSorted5, cex=0.1, col='blue', add=T, bty='n')
+boxplot(Koeffler_BM_CebpE_group5_compSorted5, cex=0.1, col='cyan', add=T, bty='n')
+dev.off()
+
+
+
+## ----ModelFits, cache=TRUE, echo=FALSE-----------------------------------
 library(MASS)
 
 set.seed(123)
 chip_data <- sort(sample(Koeffler_BM_CebpE$pileup, 1000))
+logchip_data <- sort(sample(Koeffler_BM_CebpE_log$pileup, 1000))
 n <- length(chip_data)
 
 # fitting with models
 normal.par <- fitdistr(chip_data, 'normal')
+lognormal.par <- fitdistr(logchip_data, 'normal')
 poisson.par <- fitdistr(chip_data, 'Poisson')
 negbi.par <- fitdistr(chip_data, 'negative binomial')
 
 # counts estimates generated by models
 normal.estimate <- rnorm(n, normal.par$estimate)
+lognormal.estimate <- rnorm(n, lognormal.par$estimate)
 poisson.estimate <- rpois(n, poisson.par$estimate)
 negbi.estimate <- rnbinom(n, size=negbi.par$estimate['size'], mu=negbi.par$estimate['mu'])
 
@@ -74,18 +150,29 @@ pdf('figs/Koeffler_BM_CebpE_normalModel.pdf',
     useDingbats=FALSE)
 plot(chip_data, sort(normal.estimate),
      xlim = range(1:100), ylim = range(1:100), pch = 20,
-     xlab = 'Emperical ChIPseq PileUp', 
+     xlab = 'Empirical ChIPseq PileUp', 
      ylab = 'Model Estimates', 
      main = 'ChIPseq Counts Modeled with Normal', bty='n')
 abline(0,1, col='red')
 legend('topright', paste('loglik: ', round(normal.par$loglik, 2)), bty='n')
 dev.off()
 
+pdf('figs/Koeffler_BM_CebpE_normalModel_log.pdf', 
+    useDingbats=FALSE)
+plot(logchip_data, sort(lognormal.estimate),
+     xlim = c(1.8,2), ylim =c(1.8,2), pch = 20,
+     xlab = 'Empirical Log ChIPseq PileUp', 
+     ylab = 'Model Estimates', 
+     main = 'ChIPseq Counts Modeled with Normal', bty='n')
+abline(0,1, col='red')
+legend('topright', paste('loglik: ', round(lognormal.par$loglik, 2)), bty='n')
+dev.off()
+
 pdf('figs/Koeffler_BM_CebpE_poissonModel.pdf', 
     useDingbats=FALSE)
 plot(chip_data, sort(poisson.estimate),
      xlim = range(1:100), ylim = range(1:100), pch = 20,
-     xlab = 'Emperical ChIPseq PileUp', 
+     xlab = 'empirical ChIPseq PileUp', 
      ylab = 'Model Estimates', 
      main = 'ChIPseq Counts Modeled with Poisson', bty='n')
 abline(0,1, col='red')
@@ -97,7 +184,7 @@ pdf('figs/Koeffler_BM_CebpE_negBinomModel.pdf',
     useDingbats=FALSE)
 plot(chip_data, sort(negbi.estimate),
      xlim = range(1:100), ylim = range(1:100), pch = 20,
-     xlab = 'Emperical ChIPseq PileUp', 
+     xlab = 'empirical ChIPseq PileUp', 
      ylab = 'Model Estimates', 
      main = 'ChIPseq Counts Modeled with Neg.Binomial', bty='n')
 abline(0,1, col='red')
@@ -258,6 +345,29 @@ getModelAssessment(NBMs_list_Koeffler_BM_CebpE, max_k = 10,
                    model='NBM', titleName='Koeffler_BM_CebpE') 
 
 
+## ----crossValModelSelection, cache=TRUE----------------------------------
+
+crossVal_loglikes_normal <- crossVal_MixModelSelection(Koeffler_BM_CebpE$pileup, 2:10)
+crossVal_loglikes_lognormal <- crossVal_MixModelSelection(Koeffler_BM_CebpE_log$pileup, 2:10)
+
+
+
+## ----plotCrossValModelSelection, cache=TRUE, echo=FALSE------------------
+pdf('figs/Koeffler_BM_CebpE_CrossvalModelSelection.pdf', 
+    useDingbats=FALSE)
+plot(x = 1:10, y= crossVal_loglikes_normal, 
+     xlab='Number of Components', ylab='Log-Likehood on Testing Data',
+     main='Nontransformed ChIPseq')
+dev.off()
+
+pdf('figs/Koeffler_BM_CebpE_CrossvalModelSelection_log.pdf', 
+    useDingbats=FALSE)
+plot(x = 1:10, y= crossVal_loglikes_lognormal, 
+     xlab='Number of Components', ylab='Log-Likehood on Testing Data',
+     main='Log-Transformed ChIPseq')
+dev.off()
+
+
 ## ----componentAssignmentGMM, cache=TRUE, results='hide'------------------
 assignComponentMMs(Koeffler_BM_CebpE, GMMs_list_Koeffler_BM_CebpE, 
                    output_n=paste0(work_dir,
@@ -297,8 +407,12 @@ visualizeCompAssign(bed_f = paste0(work_dir,
 # GMM log
 visualizeCompAssign(bed_f = paste0(work_dir,
                     'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_ompSorted4',
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4',
                     output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.pdf')
+visualizeCompAssign(bed_f = paste0(work_dir,
+                    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5',
+                    output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.pdf')
 
 #NBM
 visualizeCompAssign(bed_f = paste0(work_dir,
@@ -320,10 +434,17 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
                        title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4',
                        output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_compSorted4_Boxplot.pdf')
 
+# 4-component
 boxplot_compAssignment(bed_f=paste0(work_dir,
                        'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
                        title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4',
                        output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_Boxplot.pdf')
+
+# 5-component
+boxplot_compAssignment(bed_f=paste0(work_dir,
+                       'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+                       title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5',
+                       output_f ='figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5_Boxplot.pdf')
 
 boxplot_compAssignment(bed_f=paste0(work_dir,
                        'Output/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed'),
@@ -333,35 +454,11 @@ boxplot_compAssignment(bed_f=paste0(work_dir,
 
 
 
-## ----boxplotProfile, cache=TRUE------------------------------------------
-Koeffler_BM_CebpE_group1_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-Koeffler_BM_CebpE_group2_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group2_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-Koeffler_BM_CebpE_group3_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group3_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-Koeffler_BM_CebpE_group4_compSorted4 <- read.csv(sep='\t',paste0(work_dir, 
-    'Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.txt'),
-    header=TRUE, row.names=1, check.names=F)
-head(Koeffler_BM_CebpE_group1_compSorted4)[,199:200]
-
-pdf('figs/Koeffler_BM_CebpE_BoxplotProfile.pdf', 
-    useDingbats=FALSE)
-boxplot(Koeffler_BM_CebpE_group1_compSorted4, cex=0.1, col='red', bty='n')
-boxplot(Koeffler_BM_CebpE_group2_compSorted4, cex=0.1, col='green', add=T, bty='n')
-boxplot(Koeffler_BM_CebpE_group3_compSorted4, cex=0.1, col='yellow', add=T, bty='n')
-boxplot(Koeffler_BM_CebpE_group4_compSorted4, cex=0.1, col='blue', add=T, bty='n')
-dev.off()
-
-
 ## ------------------------------------------------------------------------
 sessionInfo()
 
 
-## ----knitIt,  message=FALSE, warning=FALSE-------------------------------
+## ----knitIt, include=FALSE,  message=FALSE, warning=FALSE----------------
 library(knitr)
 purl("componentAnalysis.Rnw" ) # compile to tex
 purl("componentAnalysis.Rnw", documentation = 0) # extract R code only
