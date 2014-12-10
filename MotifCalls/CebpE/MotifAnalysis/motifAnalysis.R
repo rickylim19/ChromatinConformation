@@ -94,48 +94,6 @@ Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist50kb <-
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb'))
 
 
-## ----biclusteringGMMLog, cache=TRUE--------------------------------------
-# filter out the clusters with single peaks only
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_log_dist3kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 3000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist3kb'))
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 5000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist5kb'))
-
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 8000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist8kb'))
-
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 20000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist20kb'))
-
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 50000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb'))
-
-
 ## ----DataExplorePlot, echo=FALSE, results='hide', cache=TRUE-------------
 
 plotCountCluster(Koeffler_BM_CebpE_Bicluster_NBM_comp4_dist3kb$result$local, 
@@ -164,25 +122,29 @@ plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist
         title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist3kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist3kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist5kb$result$local, 
-        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
+        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist5kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist5kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist8kb$result$local, 
-        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
+        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist8kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist8kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist20kb$result$local, 
-        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
+        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist20kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist20kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist50kb$result$local, 
         title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist50kb_SinglePeakFilteredOut_countCluster.pdf'))
 
 
-## ----DataExploreTable----------------------------------------------------
+## ----DataExploreTable, cache=TRUE, echo=FALSE----------------------------
 
 ## Table
 Koeffler_BM_CebpE_Bicluster_NBM_table <- matrix(nrow=4, ncol=5) 
@@ -229,6 +191,179 @@ print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_table,
              caption='Clustering Peaks in Different Cluster Distance: Single Peaks Filteredout'))
 
 
+## ----biclusteringGMMLog, echo=FALSE, cache=TRUE--------------------------
+# filter out the clusters with single peaks only
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist3kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 3000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist3kb'))
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 5000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist5kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 8000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist8kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 20000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist20kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 50000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb'))
+
+## ----exploreBicluster4comp, echo=FALSE-----------------------------------
+# Singlepeaks filteredout
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist3kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist3kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist3kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist5kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist5kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist8kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist8kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist20kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist20kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist50kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist50kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+
+## Table: single peaks filtered out
+
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_table <- 
+    getNoPeakTable(list_peaks= list(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist3kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb),
+                   col_names=c('Dist3kb', 'Dist5kb', 'Dist8kb', 'Dist20kb', 'Dist50kb'))
+
+
+## ----results='asis', echo=FALSE------------------------------------------
+print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_table, 
+             caption='Clustering Peaks in Different Cluster Distance: 4 Comp-GMM'))
+
+
+## ----localCluster5comp, cache=TRUE, echo=FALSE---------------------------
+# filter out the clusters with single peaks only
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist3kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 3000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist3kb'))
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist5kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 5000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist5kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist8kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 8000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist8kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist20kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 20000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist20kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist50kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 50000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb'))
+
+
+## ----exploreBicluster5comp, echo=FALSE-----------------------------------
+# Singlepeaks filteredout
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist3kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist3kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist3kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist5kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist5kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist5kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist8kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist8kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist8kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist20kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist20kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist20kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist50kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist50kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist50kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+
+## Table: single peaks filtered out
+
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_table <- 
+    getNoPeakTable(list_peaks= list(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist3kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist5kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist8kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist20kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist50kb),
+                   col_names=c('Dist3kb', 'Dist5kb', 'Dist8kb', 'Dist20kb', 'Dist50kb'))
+
+
+## ----results='asis', echo=FALSE------------------------------------------
+print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_table, 
+             caption='Clustering Peaks in Different Cluster Distance: 5 Comp-GMM'))
+
+
 ## ----MotifDataPrep, cache=TRUE-------------------------------------------
 # awk -F'\t' '{print $1"\t"$2-500"\t"$3+500"\t"$5}' 
 # Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed 
@@ -259,7 +394,7 @@ visualizeBedPeaks(bed_f = paste0(work_dir,
 
 
 
-## ------------------------------------------------------------------------
+## ----CEBPBCTCF_4comp, cache=TRUE, echo=FALSE-----------------------------
 
 CTCF_groups <- read.table(paste0(work_dir,
                 'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
@@ -302,7 +437,7 @@ CEBPB_groups$Total <- total_freq
 CEBPB_groups$Percentage <- CEBPB_groups$Freq/CEBPB_groups$Total*100.0
 
 
-## ----uctcfCebp, results='asis', echo=FALSE-------------------------------
+## ----ctcfCebp4comp, results='asis', echo=FALSE---------------------------
 print(xtable(CTCF_groups, 
       caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
 print(xtable(CEBPB_groups, 
@@ -311,6 +446,42 @@ print(xtable(CTCF_noDuplicate,
       caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
 print(xtable(CEBPB_noDuplicate, 
       caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+
+
+## ----CEBPBCTCF_5comp, cache=TRUE, echo=FALSE-----------------------------
+
+CEBP_CTCF_noDuplicate_comp5 <- read.table(paste0(work_dir,
+                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                    'Motif/CEBPB_CTCF_Motif_noDuplicates_comp5.bed'))
+colnames(CEBP_CTCF_noDuplicate_comp5) <- c('Chr', 'Start', 'End', 'Motif', 'Score', 'Comp')
+CEBPB_noDuplicate_comp5 <- subset(CEBP_CTCF_noDuplicate_comp5, Motif=='CEBPB')
+CTCF_noDuplicate_comp5 <- subset(CEBP_CTCF_noDuplicate_comp5, Motif=='CTCF')
+
+# total component frequency
+Freq_groups_comp5 <- read.table(paste0(work_dir,
+                'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'))
+total_freq_comp5 <- as.data.frame(table(Freq_groups_comp5$V4))$Freq
+total_freq_comp5
+
+CTCF_noDuplicate_comp5 <- as.data.frame(table(CTCF_noDuplicate_comp5$Comp))
+colnames(CTCF_noDuplicate_comp5) <- c('Comp', 'Freq')
+CTCF_noDuplicate_comp5$Total <- total_freq_comp5
+CTCF_noDuplicate_comp5$Percentage <- CTCF_noDuplicate_comp5$Freq/CTCF_noDuplicate_comp5$Total*100.0
+head(CTCF_noDuplicate_comp5)
+
+
+CEBPB_noDuplicate_comp5 <- as.data.frame(table(CEBPB_noDuplicate_comp5$Comp))
+colnames(CEBPB_noDuplicate_comp5) <- c('Comp', 'Freq')
+CEBPB_noDuplicate_comp5$Total <- total_freq_comp5
+CEBPB_noDuplicate_comp5$Percentage <- CEBPB_noDuplicate_comp5$Freq/CEBPB_noDuplicate_comp5$Total*100.0
+
+
+
+## ----ctcfCebp5comp, results='asis', echo=FALSE---------------------------
+print(xtable(CTCF_noDuplicate_comp5, 
+      caption='CTCF Discovered by Centrimo in Groups of 5-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+print(xtable(CEBPB_noDuplicate_comp5, 
+      caption='CEBPB Discovered by Centrimo in Groups in 5-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
 
 
 ## ----engine='bash'-------------------------------------------------------

@@ -62,7 +62,7 @@ work_dir= '/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/'
 Goal: to infer the motif bindings of transcription factors and co-factors from ChIPseq experiment.
 
 \section{Local Clustering: Direct and Indirect Bindings}
-Here, we applied local clustering following the component calls by negative binomial mixture models. 
+Here, we applied local clustering following the component calls by mixture models. 
 The distance of 3Kb, 8Kb, 20Kb, and 50Kb was used for this clustering.\\
 
 With local clustering, we found that most of the clusters are single peaks. 
@@ -71,6 +71,8 @@ Although the majority of the clusters remains single peaks (figure ~\ref{fig:num
 
 As we are interested in the chromatin conformation consisting of direct transcription factors and cofactors, 
 we excluded the clusters with only single peaks.
+
+\subsection{Local Clustering: 4 Components-Mixture Negative Binomial Models}
 
 <<DataPrep, echo=FALSE, cache=TRUE>>=
 
@@ -150,48 +152,6 @@ Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist50kb <-
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb'))
 @
 
-<<biclusteringGMMLog, cache=TRUE>>=
-# filter out the clusters with single peaks only
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_log_dist3kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 3000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist3kb'))
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 5000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist5kb'))
-
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 8000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist8kb'))
-
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 20000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist20kb'))
-
-Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb <-
- assignBiclustering(paste0(work_dir,
-    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
-    distance = 50000, filterOutSingle = TRUE, 
-    paste0(work_dir,
-    'Output/',
-    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb'))
-@
-
 <<DataExplorePlot, echo=FALSE, results='hide', cache=TRUE>>=
 
 plotCountCluster(Koeffler_BM_CebpE_Bicluster_NBM_comp4_dist3kb$result$local, 
@@ -220,25 +180,29 @@ plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist
         title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist3kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist3kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist5kb$result$local, 
-        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
+        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist5kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist5kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist8kb$result$local, 
-        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
+        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist8kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist8kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist20kb$result$local, 
-        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
+        title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist20kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist20kb_SinglePeakFilteredOut_countCluster.pdf'))
+
 plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_comp4_dist50kb$result$local, 
         title_p = 'Koeffler_BM_CebpE_NBM_comp4_dist50kb: SinglePeaks Filteredout', 
         output_f = paste0(work_dir, 
         'Output/Koeffler_BM_CebpE_NBM_comp4_dist50kb_SinglePeakFilteredOut_countCluster.pdf'))
 
 @
-<<DataExploreTable>>=
+<<DataExploreTable, cache=TRUE, echo=FALSE>>=
 
 ## Table
 Koeffler_BM_CebpE_Bicluster_NBM_table <- matrix(nrow=4, ncol=5) 
@@ -277,11 +241,6 @@ Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_table[, 5] <-
 
 @
 
-
-
-\clearpage
-\subsection{The Number of Peaks in Clusters}
-
 \begin{figure}[!htp]
     \centering
     \subfloat{\includegraphics[width = 3 in, height = 3 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist3kb_countCluster.pdf}}
@@ -294,16 +253,14 @@ Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_table[, 5] <-
 \end{figure}
 \clearpage
 
-\subsection{The Number of Peaks in Cluster: Singlepeaks Filteredout}
-
 \begin{figure}[!htp]
     \centering
-    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist3kb_SinglePeakFilteredOut_countCluster.pdf}}
-    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist5kb_SinglePeakFilteredOut_countCluster.pdf}}
-    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist8kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 3 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist3kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 3 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist5kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 3 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist8kb_SinglePeakFilteredOut_countCluster.pdf}}
     \\
-    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist20kb_SinglePeakFilteredOut_countCluster.pdf}}
-    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist50kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 3 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist20kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 3 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_NBM_comp4_dist50kb_SinglePeakFilteredOut_countCluster.pdf}}
     \caption{The Number of Peaks (percentage) in Clusters without Single Peaks}
     \label{fig:numPeaksNoSingleCell}
 \end{figure}
@@ -318,6 +275,209 @@ print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_NBM_table,
 @
 \clearpage
 
+
+\subsection{Local Clustering: Log-Transformed 4 Components-Gaussian Mixture Models}
+<<biclusteringGMMLog, echo=FALSE, cache=TRUE>>=
+# filter out the clusters with single peaks only
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist3kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 3000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist3kb'))
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 5000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist5kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 8000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist8kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 20000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist20kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'),
+    distance = 50000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb'))
+@
+<<exploreBicluster4comp, echo=FALSE>>=
+# Singlepeaks filteredout
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist3kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist3kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist3kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist5kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist5kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist8kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist8kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist20kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist20kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp4_dist50kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp4_dist50kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+
+## Table: single peaks filtered out
+
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_table <- 
+    getNoPeakTable(list_peaks= list(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist3kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist5kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist8kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist20kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_dist50kb),
+                   col_names=c('Dist3kb', 'Dist5kb', 'Dist8kb', 'Dist20kb', 'Dist50kb'))
+@
+
+\begin{figure}[!htp]
+    \centering
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp4_dist3kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp4_dist5kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp4_dist8kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp4_dist20kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp4_dist50kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \caption{The Number of Peaks (percentage) in Clusters without Single Peaks: 4 Components-GMM}
+    \label{fig:numPeaksNoSingleCell4comp}
+\end{figure}
+\clearpage
+
+<<results='asis', echo=FALSE>>=
+print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp4_table, 
+             caption='Clustering Peaks in Different Cluster Distance: 4 Comp-GMM'))
+@
+
+
+\subsection{Local Clustering: Log-Transformed 5 Components-Gaussian Mixture Models}
+
+<<localCluster5comp, cache=TRUE, echo=FALSE>>=
+# filter out the clusters with single peaks only
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist3kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 3000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist3kb'))
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist5kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 5000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist5kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist8kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 8000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist8kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist20kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 20000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist20kb'))
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist50kb <-
+ assignBiclustering(paste0(work_dir,
+    'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'),
+    distance = 50000, filterOutSingle = TRUE, 
+    paste0(work_dir,
+    'Output/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb'))
+@
+
+<<exploreBicluster5comp, echo=FALSE>>=
+# Singlepeaks filteredout
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist3kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist3kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist3kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist5kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist5kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist5kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist8kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist8kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist8kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist20kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist20kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist20kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+plotCountCluster(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist50kb$result$local, 
+        title_p = 'Koeffler_BM_CebpE_GMM_comp5_dist50kb: SinglePeaks Filteredout', 
+        output_f = paste0(work_dir, 
+        'Output/Koeffler_BM_CebpE_GMM_comp5_dist50kb_SinglePeakFilteredOut_countCluster.pdf'))
+
+
+## Table: single peaks filtered out
+
+
+Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_table <- 
+    getNoPeakTable(list_peaks= list(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist3kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist5kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist8kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist20kb,
+                                    Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_dist50kb),
+                   col_names=c('Dist3kb', 'Dist5kb', 'Dist8kb', 'Dist20kb', 'Dist50kb'))
+@
+
+\begin{figure}[!htp]
+    \centering
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp5_dist3kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp5_dist5kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp5_dist8kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \\
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp5_dist20kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \subfloat{\includegraphics[width = 2 in, height = 2 in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_comp5_dist50kb_SinglePeakFilteredOut_countCluster.pdf}}
+    \caption{The Number of Peaks (percentage) in Clusters without Single Peaks: 5 Components-GMM}
+    \label{fig:numPeaksNoSingleCell4comp}
+\end{figure}
+\clearpage
+
+<<results='asis', echo=FALSE>>=
+print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_table, 
+             caption='Clustering Peaks in Different Cluster Distance: 5 Comp-GMM'))
+@
 \section{Database-based Motif Discovery: Centdist}
 
 
@@ -345,102 +505,6 @@ Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <-
     'result.txt'))
 @
 \clearpage
-
-\section{Centdist Motif Results for Log-Transformed ChIPseq for Group1 and Group4}
-
-\begin{figure}[H]
-    \centering
-    \subfloat{\includegraphics[width = 6in, height = 6in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/ComponentAnalysis/figs/Koeffler_BM_CebpE_BoxplotProfile.png}}
-    \caption{Boxplots of ChIP Profiles in 4-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}) and group4 ({\color{blue}Blue})}
-    \label{fig:boxplotProfile}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.png}}
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.png}}
-    \\
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_centrimo.png}}
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_centrimo.png}}
-    \\
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_Centdist.jpg}}
-    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_02_Centdist.jpg}}
-    \caption{Heatmaps of ChIP Profiles in 4-component GMM group1 (Top Left), and group4 (Top Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. Below are the motif distributions for CTCF(Left) and CEBPB(Right) discovered by ChIPmeme.}
-    \label{fig:sorted4CompBoxplot}
-\end{figure}
-\clearpage
-
-\subsection{Motif ChipSeq Distribution of CEBPB and CTCF}
-<<>>=
-source('/home/ricky/Rlim/ChromatinConformation/ComponentCalls/ComponentCalls.R')
-
-visualizeBedPeaks(bed_f = paste0(work_dir,                       
-                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
-                    'Motif/CEBPB_CTCF_Motif.bed'),
-                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPB_CTCF',
-                    output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPBCTCF',
-                    max_peak=50) 
-
-@
-
-\subsection{Motif ChIPseq Distribution per Groups}
-<<>>=
-
-CTCF_groups <- read.table(paste0(work_dir,
-                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
-                'Motif/CTCF_Motif_Groups.bed'))
-CEBPB_groups <- read.table(paste0(work_dir,
-                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
-                'Motif/CEBPB_Motif_Groups.bed'))
-
-CEBP_CTCF_noDuplicate <- read.table(paste0(work_dir,
-                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
-                    'Motif/CEBPB_CTCF_Motif_noDuplicates_score.bed'))
-colnames(CEBP_CTCF_noDuplicate) <- c('Chr', 'Start', 'End', 'Motif', 'Score', 'Comp')
-CEBPB_noDuplicate <- subset(CEBP_CTCF_noDuplicate, Motif=='CEBPB')
-CTCF_noDuplicate <- subset(CEBP_CTCF_noDuplicate, Motif=='CTCF')
-
-# total component frequency
-Freq_groups <- read.table(paste0(work_dir,
-                'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'))
-total_freq <- as.data.frame(table(Freq_groups$V4))$Freq
-
-CTCF_noDuplicate <- as.data.frame(table(CTCF_noDuplicate$Comp))
-colnames(CTCF_noDuplicate) <- c('Comp', 'Freq')
-CTCF_noDuplicate$Total <- total_freq
-CTCF_noDuplicate$Percentage <- CTCF_noDuplicate$Freq/CTCF_noDuplicate$Total*100.0
-
-CTCF_groups <- as.data.frame(table(CTCF_groups$V6))
-colnames(CTCF_groups) <- c('Comp', 'Freq')
-CTCF_groups$Total <- total_freq
-CTCF_groups$Percentage <- CTCF_groups$Freq/CTCF_groups$Total*100.0
-
-CEBPB_noDuplicate <- as.data.frame(table(CEBPB_noDuplicate$Comp))
-colnames(CEBPB_noDuplicate) <- c('Comp', 'Freq')
-CEBPB_noDuplicate$Total <- total_freq
-CEBPB_noDuplicate$Percentage <- CEBPB_noDuplicate$Freq/CEBPB_noDuplicate$Total*100.0
-head(CEBPB_noDuplicate)
-
-CEBPB_groups <- as.data.frame(table(CEBPB_groups$V6))
-colnames(CEBPB_groups) <- c('Comp', 'Freq')
-CEBPB_groups$Total <- total_freq
-CEBPB_groups$Percentage <- CEBPB_groups$Freq/CEBPB_groups$Total*100.0
-@
-
-<<uctcfCebp, results='asis', echo=FALSE>>=
-print(xtable(CTCF_groups, 
-      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
-print(xtable(CEBPB_groups, 
-      caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
-print(xtable(CTCF_noDuplicate, 
-      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
-print(xtable(CEBPB_noDuplicate, 
-      caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
-@
-\clearpage
-
-
-
 
 
 
@@ -496,6 +560,161 @@ print(xtable(CEBPB_noDuplicate,
 \end{figure}
 
 
+\section{Centrimo Motif Results for Log-Transformed ChIPseq}
+
+\subsection{Centrimo Motif Results from 4-Component GMM}
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 6in, height = 6in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/ComponentAnalysis/figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted4.pdf}}
+    \caption{Boxplots of ChIP Profiles in 4-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}) and group4 ({\color{blue}Blue})}
+    \label{fig:boxplotProfileComp4}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted4_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group4_compSorted4_ProfileMatrix.png}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_centrimo.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_centrimo.png}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_Centdist.jpg}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_02_Centdist.jpg}}
+    \caption{Heatmaps of ChIP Profiles in 4-component GMM group1 (Top Left), and group4 (Top Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. Below are the motif distributions for CTCF(Left) and CEBPB(Right) discovered by ChIPmeme.}
+    \label{fig:sorted4CompBoxplot}
+\end{figure}
+\clearpage
+
+
+\subsection{Motif ChipSeq Distribution of CEBPB and CTCF: 4-Component GMM}
+<<>>=
+source('/home/ricky/Rlim/ChromatinConformation/ComponentCalls/ComponentCalls.R')
+
+visualizeBedPeaks(bed_f = paste0(work_dir,                       
+                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                    'Motif/CEBPB_CTCF_Motif.bed'),
+                    chrom='chr14', title_f = 'Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPB_CTCF',
+                    output_f = 'figs/Koeffler_BM_CebpE_GMM_ModelAssignment_log_CEBPBCTCF',
+                    max_peak=50) 
+
+@
+
+<<CEBPBCTCF_4comp, cache=TRUE, echo=FALSE>>=
+
+CTCF_groups <- read.table(paste0(work_dir,
+                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                'Motif/CTCF_Motif_Groups.bed'))
+CEBPB_groups <- read.table(paste0(work_dir,
+                'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                'Motif/CEBPB_Motif_Groups.bed'))
+
+CEBP_CTCF_noDuplicate <- read.table(paste0(work_dir,
+                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                    'Motif/CEBPB_CTCF_Motif_noDuplicates_score.bed'))
+colnames(CEBP_CTCF_noDuplicate) <- c('Chr', 'Start', 'End', 'Motif', 'Score', 'Comp')
+CEBPB_noDuplicate <- subset(CEBP_CTCF_noDuplicate, Motif=='CEBPB')
+CTCF_noDuplicate <- subset(CEBP_CTCF_noDuplicate, Motif=='CTCF')
+
+# total component frequency
+Freq_groups <- read.table(paste0(work_dir,
+                'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4.bed'))
+total_freq <- as.data.frame(table(Freq_groups$V4))$Freq
+
+CTCF_noDuplicate <- as.data.frame(table(CTCF_noDuplicate$Comp))
+colnames(CTCF_noDuplicate) <- c('Comp', 'Freq')
+CTCF_noDuplicate$Total <- total_freq
+CTCF_noDuplicate$Percentage <- CTCF_noDuplicate$Freq/CTCF_noDuplicate$Total*100.0
+
+CTCF_groups <- as.data.frame(table(CTCF_groups$V6))
+colnames(CTCF_groups) <- c('Comp', 'Freq')
+CTCF_groups$Total <- total_freq
+CTCF_groups$Percentage <- CTCF_groups$Freq/CTCF_groups$Total*100.0
+
+CEBPB_noDuplicate <- as.data.frame(table(CEBPB_noDuplicate$Comp))
+colnames(CEBPB_noDuplicate) <- c('Comp', 'Freq')
+CEBPB_noDuplicate$Total <- total_freq
+CEBPB_noDuplicate$Percentage <- CEBPB_noDuplicate$Freq/CEBPB_noDuplicate$Total*100.0
+head(CEBPB_noDuplicate)
+
+CEBPB_groups <- as.data.frame(table(CEBPB_groups$V6))
+colnames(CEBPB_groups) <- c('Comp', 'Freq')
+CEBPB_groups$Total <- total_freq
+CEBPB_groups$Percentage <- CEBPB_groups$Freq/CEBPB_groups$Total*100.0
+@
+
+<<ctcfCebp4comp, results='asis', echo=FALSE>>=
+print(xtable(CTCF_groups, 
+      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+print(xtable(CEBPB_groups, 
+      caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq'), include.rownames=FALSE)
+print(xtable(CTCF_noDuplicate, 
+      caption='CTCF Discovered by Centrimo in Groups of 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+print(xtable(CEBPB_noDuplicate, 
+      caption='CEBPB Discovered by Centrimo in Groups in 4-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+@
+\clearpage
+
+
+\subsection{Centrimo Motif Results from 5-Component GMM}
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 6in, height = 6in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/ComponentAnalysis/figs/Koeffler_BM_CebpE_BoxplotProfile_compSorted5.pdf}}
+    \caption{Boxplots of ChIP Profiles in 4-component GMM group1 ({\color{red}Red)}, group2({\color{green}Green}), group3 ({\color{yellow}Yellow}), group4 ({\color{blue}Blue}), group5 ({\color{cyan}Cyan})}
+    \label{fig:boxplotProfileComp5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group1_compSorted5_ProfileMatrix.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/ComponentCalls/CebpE/Output/Koeffler_BM_CebpE_GMM_ModelAssignment_log_group5_compSorted5_ProfileMatrix.png}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_centrimo.png}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_centrimo.png}}
+    \\
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CTCF_Centdist_group1_comp5.jpg}}
+    \subfloat{\includegraphics[width = 3in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/MotifAnalysis/figs/CEBPB_02_Centdist_group5_comp5.jpg}}
+    \caption{Heatmaps of ChIP Profiles in 5-component GMM group1 (Top Left), and group5 (Top Right). {\color{red}Red} and {\color{black}Black} represents positive and zero values, respectively. Below are the motif distributions for CTCF(Left) and CEBPB(Right) discovered by ChIPmeme.}
+    \label{fig:sorted4CompBoxplot}
+\end{figure}
+\clearpage
+
+
+<<CEBPBCTCF_5comp, cache=TRUE, echo=FALSE>>=
+
+CEBP_CTCF_noDuplicate_comp5 <- read.table(paste0(work_dir,
+                    'Output/ChipMeme_Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted4_2kb/',
+                    'Motif/CEBPB_CTCF_Motif_noDuplicates_comp5.bed'))
+colnames(CEBP_CTCF_noDuplicate_comp5) <- c('Chr', 'Start', 'End', 'Motif', 'Score', 'Comp')
+CEBPB_noDuplicate_comp5 <- subset(CEBP_CTCF_noDuplicate_comp5, Motif=='CEBPB')
+CTCF_noDuplicate_comp5 <- subset(CEBP_CTCF_noDuplicate_comp5, Motif=='CTCF')
+
+# total component frequency
+Freq_groups_comp5 <- read.table(paste0(work_dir,
+                'Input/Koeffler_BM_CebpE_GMM_ModelAssignment_log_compSorted5.bed'))
+total_freq_comp5 <- as.data.frame(table(Freq_groups_comp5$V4))$Freq
+total_freq_comp5
+
+CTCF_noDuplicate_comp5 <- as.data.frame(table(CTCF_noDuplicate_comp5$Comp))
+colnames(CTCF_noDuplicate_comp5) <- c('Comp', 'Freq')
+CTCF_noDuplicate_comp5$Total <- total_freq_comp5
+CTCF_noDuplicate_comp5$Percentage <- CTCF_noDuplicate_comp5$Freq/CTCF_noDuplicate_comp5$Total*100.0
+head(CTCF_noDuplicate_comp5)
+
+
+CEBPB_noDuplicate_comp5 <- as.data.frame(table(CEBPB_noDuplicate_comp5$Comp))
+colnames(CEBPB_noDuplicate_comp5) <- c('Comp', 'Freq')
+CEBPB_noDuplicate_comp5$Total <- total_freq_comp5
+CEBPB_noDuplicate_comp5$Percentage <- CEBPB_noDuplicate_comp5$Freq/CEBPB_noDuplicate_comp5$Total*100.0
+
+@
+
+<<ctcfCebp5comp, results='asis', echo=FALSE>>=
+print(xtable(CTCF_noDuplicate_comp5, 
+      caption='CTCF Discovered by Centrimo in Groups of 5-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+print(xtable(CEBPB_noDuplicate_comp5, 
+      caption='CEBPB Discovered by Centrimo in Groups in 5-Component Log-Transformed ChIPseq:no duplicate'), include.rownames=FALSE)
+@
+\clearpage
 
 \section{De Novo Motif Discovery}
 
