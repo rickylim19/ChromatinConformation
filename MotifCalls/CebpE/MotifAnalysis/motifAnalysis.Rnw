@@ -480,28 +480,39 @@ print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_table,
 @
 \section{Database-based Motif Discovery: Centdist}
 
-
-
-<<MotifDataPrep, cache=TRUE>>=
-# awk -F'\t' '{print $1"\t"$2-500"\t"$3+500"\t"$5}' 
-# Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed 
-# > Output/Koeffler_BM_CebpE_Peaks_1kb.bed
-@
-
 We run CentDist to search for the occurrances of database motifs (JASPAR and TRANSFAC) \href{biogpu.ddns.comp.nus.edu.sg}{CentDist} on the ChIPseq Peaks indirect and direct clusters.
 In all cluster distance, however the CEBP motifs were found in both direct and indirect clusters. 
 
 
 
-<<CentDist, cache=TRUE>>=
+<<CentDist, echo=FALSE>>=
 work_dir_centdist = '/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/'
-Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct <- 
+Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_direct_comp4 <- 
     read.delim(paste0(work_dir,'Output/CentDist/',
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/',
     'result.txt'))
-Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <- 
+Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_indirect_comp4 <- 
     read.delim(paste0(work_dir,'Output/CentDist/',
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/',
+    'result.txt'))
+
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp4 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb_direct/',
+    'result.txt'))
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb_indirect/',
+    'result.txt'))
+
+
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp5 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb_direct/',
+    'result.txt'))
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb_indirect/',
     'result.txt'))
 @
 \clearpage
@@ -510,6 +521,45 @@ Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <-
 
 
 \section{Centdist Motif Results for Direct and Indirect Clusters within 50kb: CebpE}
+%\begin{table}[h!]
+%  \centering
+%    \multicolumn{2}{c}{Direct}
+%    \multicolumn{2}{c}{Indirect} \\
+%    \cline{1-2}
+%    \cline{2-4}
+%  \begin{tabular}{ | m{5cm} | c | m{5cm} | c | }
+%    \hline
+%    Info & Dist & Info & Dist\\ \hline
+%
+%      %row1
+%      \begin{itemize}
+%        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_direct_comp4[1,'Name']}
+%        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_direct_comp4[1,'Binding.Range']}
+%        \item P.value: \textasciitilde \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_direct_comp4[1,'P.value']}
+%        \item Rank: 1
+%      \end{itemize}
+%      &
+%    \begin{minipage}{.2\textwidth}
+%      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/V$CEBPB_02}
+%    \end{minipage}
+%    &
+%      \begin{itemize}
+%        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_indirect_comp4[1,'Name']}
+%        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_indirect_comp4[1,'Binding.Range']}
+%        \item P.value: \textasciitilde \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_indirect_comp4[1,'P.value']}
+%        \item Rank: 1
+%      \end{itemize}
+%    &
+%    \begin{minipage}{.2\textwidth}
+%      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/V$CEBPB_02}
+%    \end{minipage}
+%    \\ \hline
+%
+%  \end{tabular}
+%  \caption{CebpE ChIPseq in BM: CentDist Motif Discovery in 4-Component NBM}
+%  \label{CebpECentdist}
+%\end{table}
+
 \begin{table}[h!]
   \centering
     \multicolumn{2}{c}{Direct}
@@ -522,43 +572,116 @@ Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <-
 
       %row1
       \begin{itemize}
-        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[1,'Name']}
-        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[1,'Binding.Range']}
-        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct[1,'P.value']}
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp4[1,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp4[1,'Binding.Range']}
+        \item P.value: \textasciitilde\Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp4[1,'P.value']}
         \item Rank: 1
       \end{itemize}
       &
     \begin{minipage}{.2\textwidth}
-      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/V$CEBPB_02}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb_direct/V$CEBPB_02.png}
     \end{minipage}
     &
       \begin{itemize}
-        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[1,'Name']}
-        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[1,'Binding.Range']}
-        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect[1,'P.value']}
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4[1,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4[1,'Binding.Range']}
+        \item P.value: \textasciitilde\Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4[1,'P.value']}
         \item Rank: 1
       \end{itemize}
     &
     \begin{minipage}{.2\textwidth}
-      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/V$CEBPB_02}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb_indirect/V$CEBPB_02.png}
     \end{minipage}
     \\ \hline
 
   \end{tabular}
-  \caption{CebpE ChIPseq in BM: CentDist Motif Discovery}\label{CebpECentdist}
+  \caption{CebpE ChIPseq in BM: CentDist Motif Discovery in 4-Component GMM}
+  \label{CebpECentdist}
 \end{table}
 
+\begin{table}[h!]
+  \centering
+    \multicolumn{2}{c}{Direct}
+    \multicolumn{2}{c}{Indirect} \\
+    \cline{1-2}
+    \cline{2-4}
+  \begin{tabular}{ | m{5cm} | c | m{5cm} | c | }
+    \hline
+    Info & Dist & Info & Dist\\ \hline
+
+      %row1
+      \begin{itemize}
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp5[1,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp5[1,'Binding.Range']}
+        \item P.value: \textasciitilde\Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp5[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+      &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb_direct/V$CEBPB_02.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5[1,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5[1,'Binding.Range']}
+        \item P.value: \textasciitilde\Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5[1,'P.value']}
+        \item Rank: 1
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb_indirect/V$CEBPB_02.png}
+    \end{minipage}
+    \\ \hline
+
+  \end{tabular}
+  \caption{CebpE ChIPseq in BM: CentDist Motif Discovery in 5-Component GMM}
+  \label{CebpECentdist}
+\end{table}
+
+Note that CTCF was found only in indirect bindings not in direct bindings in all cluster distances ranging from 3kb to 50kb.
+
+\begin{table}[h!]
+  \centering
+    \multicolumn{2}{c}{Indirect 4-Comp GMM}
+    \multicolumn{2}{c}{Indirect 5-Comp GMM} \\
+    \cline{1-2}
+    \cline{2-4}
+  \begin{tabular}{ | m{5cm} | c | m{5cm} | c | }
+    \hline
+    Info & Dist & Info & Dist\\ \hline
+
+      %row1
+      \begin{itemize}
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4[6,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4[6,'Binding.Range']}
+        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4[6,'P.value']}
+        \item Rank: 6
+      \end{itemize}
+      &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb_indirect/V$jaspar_CTCF.png}
+    \end{minipage}
+    &
+      \begin{itemize}
+        \item Name: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5[6,'Name']}
+        \item Binding.Range: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5[6,'Binding.Range']}
+        \item P.value: \Sexpr{Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5[6,'P.value']}
+        \item Rank: 6
+      \end{itemize}
+    &
+    \begin{minipage}{.2\textwidth}
+      \includegraphics[width=30mm, height=30mm]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb_indirect/V$jaspar_CTCF.png}
+    \end{minipage}
+    \\ \hline
+
+  \end{tabular}
+  \caption{CTCF ChIPseq in BM indirect: CentDist Motif Discovery in 4- and 5-Component GMM}
+  \label{CebpECentdist}
+\end{table}
+
+
+
 \clearpage
-
-\begin{figure}[!htp]
-    \centering
-    \subfloat{\includegraphics[width = 7in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/top5_koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct.png}}
-    \\
-    \subfloat{\includegraphics[width = 7in, height = 3in]{/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/Output/CentDist/Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/top5_Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect.png}}
-    \caption{Top 5 Motifs Discovered from Direct and Indirect Clusters.}
-    \label{fig:chipseqScoreHomoHeteroCebpMotif}
-\end{figure}
-
 
 \section{Centrimo Motif Results for Log-Transformed ChIPseq}
 
@@ -1111,4 +1234,5 @@ knit2pdf("motifAnalysis.Rnw")
 @
 
 \end{document}
+
 

@@ -364,21 +364,34 @@ print(xtable(Koeffler_BM_CebpE_BiclusterSinglePeakFilteredOut_GMM_comp5_table,
              caption='Clustering Peaks in Different Cluster Distance: 5 Comp-GMM'))
 
 
-## ----MotifDataPrep, cache=TRUE-------------------------------------------
-# awk -F'\t' '{print $1"\t"$2-500"\t"$3+500"\t"$5}' 
-# Input/Koeffler_BM_CebpE_NBM_ModelAssignment_compSorted4.bed 
-# > Output/Koeffler_BM_CebpE_Peaks_1kb.bed
-
-
-## ----CentDist, cache=TRUE------------------------------------------------
+## ----CentDist, echo=FALSE------------------------------------------------
 work_dir_centdist = '/home/ricky/Rlim/ChromatinConformation/MotifCalls/CebpE/'
-Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_direct <- 
+Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_direct_comp4 <- 
     read.delim(paste0(work_dir,'Output/CentDist/',
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_direct/',
     'result.txt'))
-Koeffler_BM_ChIPseq_CebpE_Bicluster_compSorted_dist50kb_indirect <- 
+Koeffler_BM_ChIPseq_CebpE_Bicluster_NBM_compSorted_dist50kb_indirect_comp4 <- 
     read.delim(paste0(work_dir,'Output/CentDist/',
     'Koeffler_BM_CebpE_NBM_BiclusterAssignment_SinglePeakFilteredOut_compSorted4_dist50kb_indirect/',
+    'result.txt'))
+
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp4 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb_direct/',
+    'result.txt'))
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp4 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted4_dist50kb_indirect/',
+    'result.txt'))
+
+
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_direct_comp5 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb_direct/',
+    'result.txt'))
+Koeffler_BM_ChIPseq_CebpE_Bicluster_GMM_compSorted_dist50kb_indirect_comp5 <- 
+    read.delim(paste0(work_dir,'Output/CentDist/',
+    'Koeffler_BM_CebpE_GMM_BiclusterAssignment_SinglePeakFilteredOut_log_compSorted5_dist50kb_indirect/',
     'result.txt'))
 
 
