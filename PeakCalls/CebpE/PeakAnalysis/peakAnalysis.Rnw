@@ -1,0 +1,356 @@
+\documentclass{article}
+\usepackage{color}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[demo]{graphicx}
+\usepackage{booktabs}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+\usepackage{breakurl}
+\usepackage{array}
+\newcommand\Mark[1]{\textsuperscript#1}
+\renewcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textbf{#1}}}%
+
+\begin{document}
+
+<<setup, include=FALSE, cache=TRUE>>=
+# set global chunk options
+# for figures
+opts_chunk$set(fig.path='figs/', fig.align='center', fig.show='hold',
+               dev='CairoPDF', out.width='.4\\linewidth')
+# replacing "=" into "->" to make it R thing
+options(replace.assign=TRUE,width=90)
+# caching chunks
+opts_chunk$set(cache.extra = R.version,cache.path='cache/')
+opts_chunk$set(cache.extra = rand_seed)
+@
+
+\begingroup
+\centering
+{\LARGE Predicting the Chromatin Conformation From ChIPseq CebpE: Peak Calls \\[1.5em]
+\large Ricky Lim\Mark{1}, Samuel Collombet\Mark{2}, Agus Salim\Mark{3}, Touati Benoukraf\Mark{1}}\\[1em]
+\begin{tabular}{*{3}{>{\centering}p{.25\textwidth}}}
+    \Mark{1}Cancer Science Institute of Singapore, National University of Singapore&\Mark{2}Institut de Biologie de l'Ecole Normale Superieur de Paris& \Mark{3}Department of Mathematics and Statistics& \tabularnewline
+%National University of Singapore& La Trobe University& National University of Singapore\tabularnewline
+%\url{csilr@nus.edu.sg} & \url{samuel.collombet@ens.fr} & \url{A.Salim@latrobe.edu.au} & \url{csitb@nus.edu.sg}
+\url{benoukraf@nus.edu.sg}
+\end{tabular}\par
+\endgroup
+
+<<Rcodes>>=
+work_dir = '/home/ricky/Rlim/ChromatinConformation/PeakCalls/CebpE/'
+source('/home/ricky/Rlim/ChromatinConformation/PeakCalls/PeakCalls.R')
+@
+
+\section{Peak Calls using jahmm}
+
+jahmm (just another hidden markov model) package is available on \href{https://github.com/gui11aume/jahmm}{github}.
+jahmm is a discretizer to call peaks from ChIPseq data.\\
+
+\subsection{Data Preparation}
+The input of jahmm is the binned-reads from aligned ChIPseq data.\\
+
+In this experiment, the dataset is \href{https://pubmedylicious.appspot.com/result/5734977488551936}{CEBP-Epsilon} dataset from Koeffler lab coupled with its input sample.
+This dataset was binned into 300bp and 3000bp bins as the resolution of the ChIPseq peaks.
+The input data was preprocessed (binning) as follows:
+
+\begin{verbatim}
+
+    #1. Following read alignment using bowtie2, bam format is converted into bed
+    bedtools bamtobed -i <bam> > *.bed
+    ls CebpE/Input/*.bam | parallel ``bedtools bamtobed -i {} > {.}.bed''
+
+    #2. The converted bed files are then binned into 300bp and 3000bp bins
+    ls CebpE/Input/KoefflerLab_BM_*.bed | 
+    parallel ``./binitBed.py -b 300 -l 'mm10' -F 'bed' -n 2 -od 'CebpE/Input/' {} '' &
+    ls CebpE/Input/KoefflerLab_BM_*.bed | 
+    parallel ``./binitBed.py -b 3000 -l 'mm10' -F 'bed' -n 2 -od 'CebpE/Input/' {} '' &
+
+    # add header
+    sed -i '1 i\chr\tstart\tend\tInput'     
+    # combined the sample with input for ChIPseq profile
+    cut -f4 3000bin-KoefflerLab_BM_ChIPseq_CebpE_mm10_q10rmdup.bed | 
+    paste 3000bin-KoefflerLab_BM_ChIPseq_Input_mm10_q10rmdup.bed - > 
+    3000bin-KoefflerLab_BM_ChIPseq_CebpE_Input.bed
+    cut -f4 300bin-KoefflerLab_BM_ChIPseq_CebpE_mm10_q10rmdup.bed | 
+    paste 300bin-KoefflerLab_BM_ChIPseq_Input_mm10_q10rmdup.bed - > 
+    300bin-KoefflerLab_BM_ChIPseq_CebpE_Input.bed
+
+\end{verbatim}
+
+<<dataPrep, cache=TRUE>>=
+KoefflerLab_BM_ChIPseq_CebpE_3000 <- read.table(paste0(work_dir, 
+                           'Input/3000bin-KoefflerLab_BM_ChIPseq_CebpE_Input.bed'),
+                                                header=T)
+KoefflerLab_BM_ChIPseq_CebpE_300 <- read.table(paste0(work_dir, 
+                           'Input/300bin-KoefflerLab_BM_ChIPseq_CebpE_Input.bed'),
+                                               header=T)
+
+head(KoefflerLab_BM_ChIPseq_CebpE_3000)
+KoefflerLab_BM_ChIPseq_CebpE_300_hmm <- KoefflerLab_BM_ChIPseq_CebpE_300[, c(1,4,5)]
+KoefflerLab_BM_ChIPseq_CebpE_3000_hmm <- KoefflerLab_BM_ChIPseq_CebpE_3000[, c(1,4,5)]
+@
+
+\subsection{Peak Calling: jahmm fit}
+
+In order to fit the ChIPseq read distributions using hidden markov model, three states were assumed.
+State 0 and 1 corresponds to non-targets and state 2 denotes the targets or ChIPseq peaks.\\
+
+The fittings of jahmm on this dataset were shown in tables (see table below) and visualized in figures ~\ref{fig:ChipSeqPeakCalls300} and ~\ref{fig:ChipSeqPeakCalls3000} for 300bp and 3000bp peak resolutions, respectively.
+<<fitjaHMM, cache=TRUE>>=
+set.seed(12345)
+fit_300 <- jahmm(KoefflerLab_BM_ChIPseq_CebpE_300_hmm)
+fit_3000 <- jahmm(KoefflerLab_BM_ChIPseq_CebpE_3000_hmm)
+
+plotFit(KoefflerLab_BM_ChIPseq_CebpE_300_hmm, fit_300, 1:100000, 
+        paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_300_Rjahmm.pdf'))
+
+plotFit(KoefflerLab_BM_ChIPseq_CebpE_3000_hmm, fit_3000, 1:10000, 
+        paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_3000_Rjahmm.pdf'))
+
+no_fit_300 <- table(fit_300$path)
+no_fit_300 <- as.data.frame(no_fit_300)
+colnames(no_fit_300) <- c('state', 'freq')
+no_fit_3000 <- table(fit_3000$path)
+no_fit_3000 <- as.data.frame(no_fit_3000)
+colnames(no_fit_3000) <- c('state', 'freq')
+
+@
+
+\clearpage
+\subsubsection{State Frequency of the Fitted ChiPseq}
+
+<<peakTable, echo=FALSE, results='asis'>>=
+print(xtable(no_fit_300, caption='Frequency of States in 300bp Peak Resolution'))
+print(xtable(no_fit_3000, caption='Frequency of States in 3000bp Peak Resolution'))
+@
+
+<<pdfTable, echo=FALSE>>=
+createPDFTable(no_fit_300, 'Stat Freq in 300bp', paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_300_Rjahmm_Freq.pdf'))
+createPDFTable(no_fit_3000, 'Stat Freq in 3000bp', paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_3000_Rjahmm_Freq.pdf'))
+@
+
+\clearpage
+\begin{figure}[!htbp]
+    \includegraphics[width=7in, height=7in]{/home/ricky/Rlim/ChromatinConformation/PeakCalls/CebpE/Output/KoefflerLab_BM_ChIPseq_CebpE_300_Rjahmm.pdf}
+    \\
+    \caption{ChipSeq Peak Calls of CebpE: 300bp}
+    \label{fig:ChipSeqPeakCalls300}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \includegraphics[width=7in, height=7in]{/home/ricky/Rlim/ChromatinConformation/PeakCalls/CebpE/Output/KoefflerLab_BM_ChIPseq_CebpE_3000_Rjahmm.pdf}
+    \\
+    \caption{ChipSeq Peak Calls of CebpE: 3000bp}
+    \label{fig:ChipSeqPeakCalls3000}
+\end{figure}
+\clearpage
+
+\subsection{PeakCalls Output}
+The identified targets which are the ChIPseq peaks fitted with state 2 were produced as outputs.
+
+<<peakCallsJahmm, cache=TRUE>>=
+KoefflerLab_BM_ChIPseq_CebpE_300$path <- fit_300$path
+KoefflerLab_BM_ChIPseq_CebpE_3000$path <- fit_3000$path
+head(KoefflerLab_BM_ChIPseq_CebpE_300)
+
+KoefflerLab_BM_ChIPseq_CebpE_300_targets <- with(KoefflerLab_BM_ChIPseq_CebpE_300, 
+                                subset(KoefflerLab_BM_ChIPseq_CebpE_300, path == 2))
+KoefflerLab_BM_ChIPseq_CebpE_3000_targets<- with(KoefflerLab_BM_ChIPseq_CebpE_3000, 
+                                subset(KoefflerLab_BM_ChIPseq_CebpE_3000, path == 2))
+
+targets_300 <- nrow(KoefflerLab_BM_ChIPseq_CebpE_300_targets)
+targets_3000 <- nrow(KoefflerLab_BM_ChIPseq_CebpE_3000_targets)
+
+write.table(KoefflerLab_BM_ChIPseq_CebpE_300_targets, 
+            paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_300_targets.bed'),  
+            row.names=F, quote=F, sep='\t')
+write.table(KoefflerLab_BM_ChIPseq_CebpE_3000_targets, 
+            paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_3000_targets.bed'),  
+            row.names=F, quote=F, sep='\t')
+@
+
+
+\section{MACS versus jaHMM}
+
+\begin{verbatim}
+    # MACS peak called using the bash script ./macsPeakCalling
+
+    # The peak summits were then binned into 300-bins
+    ./binitBed.py -b 300 -l 'mm10' -F 'bed' -n 2 -od 'CebpE/Output/' 
+    CebpE/Output/KoefflerLab_BM_ChIPseq_CebpE_mm10_summits.bed 
+    # filter out the bins without peak summits
+     awk '{if($4 != 0) print $0;}' 300bin-KoefflerLab_BM_ChIPseq_CebpE_mm10_summits.bed > 
+     300bin-KoefflerLab_BM_ChIPseq_CebpE_mm10_summits_filtered.bed
+
+
+\end{verbatim}
+
+<<gRangesPrep, cache=TRUE>>=
+
+macs_targets <- read.table(paste0(work_dir,
+                    'Output/300bin-KoefflerLab_BM_ChIPseq_CebpE_mm10_summits_filtered.bed'))
+colnames(macs_targets) <- c('chr', 'start', 'end', 'peakScore')
+# bam_scores for number of reads for target and input
+bam_scores <- read.table(paste0(work_dir,
+                    'Input/300bin-KoefflerLab_BM_ChIPseq_CebpE_Input.bed'), header=T)
+
+# substitute peakScore with the bam score
+macs_targets <- merge(macs_targets, bam_scores, by=c('chr', 'start', 'end') )
+macs_targets <- macs_targets[, c(1,2,3,5,6)]
+
+
+jahmm_targets <- KoefflerLab_BM_ChIPseq_CebpE_300_targets[,c(1,2,3,4,5)]
+rownames(jahmm_targets) <- 1:nrow(jahmm_targets)
+macs_targets <- data.table(macs_targets, key=c('chr', 'start', 'end'))
+jahmm_targets <- data.table(jahmm_targets, key=c('chr', 'start', 'end'))
+
+macs_targetsOnly <- macs_targets[!jahmm_targets]
+jahmm_targetsOnly <- jahmm_targets[!macs_targets]
+macs_jahmm <- merge(macs_targets, jahmm_targets,
+                    by=c('chr', 'start', 'end'))
+
+head(macs_jahmm)
+macs_jahmm_targets <- macs_jahmm[, 1:5, with=F]
+head(macs_jahmm_targets)
+setnames(macs_jahmm_targets, c('chr', 'start', 'end', 'Input.x', 'CebpE.x'),
+                             c('chr', 'start', 'end', 'Input', 'CebpE'))
+@
+
+
+<<plotMacsVsJahmm, cache=TRUE>>=
+plotTargetInput(macs_targetsOnly, 1:500, ylim= c(0,100), 
+                'Output/KoefflerLab_BM_ChIPseq_CebpE_macs_targets.pdf',
+                title_f = 'macs Targets Only')     
+
+plotTargetInput(jahmm_targetsOnly, 1:500, ylim = c(0,100),  
+                'Output/KoefflerLab_BM_ChIPseq_CebpE_jahmm_targets.pdf',     
+                title_f = 'jahmm Targets Only')     
+
+plotTargetInput(macs_jahmm_targets, 1:500, ylim=c(0,100), 
+                'Output/KoefflerLab_BM_ChIPseq_CebpE_macs_jahmm_targets.pdf',     
+                title_f = 'macs and jahmm Targets')     
+
+# plot venn diagram
+pdf(paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_macs_jahmm_venn.pdf'),
+    pointsize=21)
+v <- draw.pairwise.venn(nrow(macs_targets), nrow(jahmm_targets), nrow(macs_jahmm),
+                        c('macs', 'jahmm'), 
+                        fill=c('red', 'blue'), lty='blank', 
+                        cex = 1, lwd = 1)
+dev.off()
+@
+
+
+\begin{figure}[!htbp]
+    \begin{center}
+        \includegraphics[width=3in, height=2.5in]{/home/ricky/Rlim/ChromatinConformation/PeakCalls/CebpE/Output/KoefflerLab_BM_ChIPseq_CebpE_macs_jahmm_venn.pdf}
+    \end{center}
+    \\
+    \includegraphics[width=2in, height=2.5in]{/home/ricky/Rlim/ChromatinConformation/PeakCalls/CebpE/Output/KoefflerLab_BM_ChIPseq_CebpE_jahmm_targets.pdf}
+    \includegraphics[width=2in, height=2.5in]{/home/ricky/Rlim/ChromatinConformation/PeakCalls/CebpE/Output/KoefflerLab_BM_ChIPseq_CebpE_macs_jahmm_targets.pdf}
+    \includegraphics[width=2in, height=2.5in]{/home/ricky/Rlim/ChromatinConformation/PeakCalls/CebpE/Output/KoefflerLab_BM_ChIPseq_CebpE_macs_targets.pdf}
+    \caption{Comparison of Targets Identified by macs and jahmm}
+    \label{fig:targetComparisonMacsJahmm}
+\end{figure}
+
+
+\clearpage
+%\subsection{Reads Alignment}
+<<readsAlignment, cache=TRUE, echo = F>>=
+#library(ggbio)
+#library(GenomicAlignments)
+#set.seed(12345)
+
+#KoefflerLab_BM_ChIPseq_CebpE_300_jahmm_granges <- 
+#    makeGRangesFromDataFrame(KoefflerLab_BM_ChIPseq_CebpE_300_jahmm,
+#                             keep.extra.columns = TRUE,
+#                             ignore.strand = TRUE)
+#
+#KoefflerLab_BM_ChIPseq_CebpE_300_macs_granges <- 
+#    makeGRangesFromDataFrame(KoefflerLab_BM_ChIPseq_CebpE_300_macs,
+#                             keep.extra.columns = TRUE,
+#                             ignore.strand = TRUE)
+#
+#KoefflerLab_BM_ChIPseq_CebpE_summits_macs_granges <- 
+#    makeGRangesFromDataFrame(KoefflerLab_BM_ChIPseq_CebpE_summits_macs,
+#                             keep.extra.columns = TRUE,
+#                             ignore.strand = TRUE)
+
+plotReadsOnTargets <- function(targets, n){
+ 
+    total_targets <- length(targets)
+    #select randomnly n targets to be plotted with the aligned reads
+    ix <- sample(1:total_targets, n, replace = T)
+    selected_targets <- targets[ix]
+    for (i in 1:n){
+        which <- selected_targets[i]
+        param <- ScanBamParam(which = which)
+        alignments <- readGAlignments(bam_file, index = bam_index, param = param)
+
+        alignmentPlot <- autoplot(alignments)
+        coveragePlot <- ggplot(as(alignments, 'GRanges')) + 
+                            stat_coverage(color='gray40', fill = 'skyblue')
+
+        pdf(paste0(work_dir, 'Output/KoefflerLab_BM_ChIPseq_CebpE_bam_coverage_', i ,'.pdf'))
+        print(tracks(alignmentPlot, coveragePlot))
+        dev.off()
+    }
+}
+
+#plotReadsOnTargets(KoefflerLab_BM_ChIPseq_CebpE_300_jahmm_granges, 3)
+
+
+@
+
+\clearpage
+\section{Results: jaHMM}
+
+Results from this PeakAnalysis pipeline on CebpE dataset using jahmm:
+
+\begin{itemize}
+    \item 3 states were sufficient to discretize the ChIPseq peaks (300bp or 3000bp resolution) into targets and non-targets.
+    \item In 300bp and 3000bp peak resolution, \Sexpr{targets_300}and \Sexpr{targets_3000} targets were identified, respectively. 
+    \item In comparison with macs peak caller, jahmm(\Sexpr{nrow(jahmm_targets)}) could identify more targets than macs(\Sexpr{nrow(macs_targets)}).
+    \item Peaks identified by jahmm characterized by higher enrichment of target reads in comparison to the input.
+\end{itemize}
+
+
+
+
+
+
+\clearpage
+\begin{verbatim}
+  Filename: chromatinConformation.Rnw
+  Working directory: \Sexpr{getwd()} 
+\end{verbatim}
+
+\section{Metainfo}
+<<>>=
+sessionInfo()
+@
+
+
+<<knitIt, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE>>=
+library(knitr)
+purl("peakAnalysis.Rnw" ) # compile to tex
+purl("peakAnalysis.Rnw", documentation = 0) # extract R code only
+knit2pdf("peakAnalysis.Rnw")
+@
+
+\end{document}
