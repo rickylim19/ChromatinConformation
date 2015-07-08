@@ -1,0 +1,145 @@
+#!/bin/bash
+#
+# getBamFromSRA.sh
+# Copyright (C) 2014 ricky <ricky@tblab-Precision-T1650>
+#
+# Distributed under terms of the MIT license.
+#
+
+
+#################################################################################################################
+# Pipeline to convert .sra to .bam (aligned read) using bowtie2                                                 #
+#                                                                                                               #
+# Filename format (output): KoefflerLab_BM_ChIPseq_Cebpa_mm10_q10rmdup.bam                                      #
+#                                                                                                               #
+# time ./getBamFromSRA.sh -c 4 -a CebpB/Input/annot.txt -i CebpB/Input -o CebpB/Output 2> CebpB/log_CebpB.txt & #
+#                                                                                                               #
+# This script requires annotation file, stored at CebpB/Input/annot.txt                                         #
+# CebpB/Input/SRR577909.fastq,CebpB/Input/HudsonAlpha_GM12878_ChIPseq_CebpB_hg19_rep1.fastq                     #
+# CebpB/Input/SRR577910.fastq,CebpB/Input/HudsonAlpha_GM12878_ChIPseq_CebpB_hg19_rep2.fastq                     #
+# CebpB/Input/SRR577945.fastq,CebpB/Input/HudsonAlpha_GM12878_ChIPseq_Input_hg19_rep1.fastq                     #
+#                                                                                                               #
+#################################################################################################################
+
+trap 'echo Keyboard interruption... ; exit 1' SIGINT
+
+if [ $# -eq 0 ]; then
+  echo "Usage -c [no.core] -a [annot.file] -l [list.file] -i [input_dir] -o [output_dir]"
+  echo "[no.core]: for parallel processing"
+  echo "[annot.file]: conversion of sra number to file descriptor"
+  echo "[input_dir] : list of .rsa files"
+  echo "[output_dir}: storage directory"
+  echo "e.g:"
+  echo "time getBamFromSRA -c 4 -g /home/ricky/Rlim/Biotools/Genomes/hg19/bowtie2/hg19 -a CebpB/Input/annot.txt -i CebpB/Input -o CebpB/Output 2> CebpB/log_CebpB.txt &"
+  echo "Prepare in advance the annot.txt and also double check for the list of files created (step no.3 in this script)"
+exit 1
+fi
+
+while getopts ":c:g:a:i:o:" opt; do
+  case $opt in
+    c)
+      echo "-n number of cores uses: $OPTARG" >&2
+      core="$OPTARG"
+      ;;
+    g)
+      echo "-genome ref: $OPTARG" >&2
+      genomeRef="$OPTARG"
+      ;;
+    a)
+      echo "-a annotation file: $OPTARG" >&2
+      annot="$OPTARG"
+      ;;
+    i)
+      echo "-i your input file is: $OPTARG" >&2
+      input_dir="$OPTARG"
+      ;;
+    o)
+      echo -e "-o output directory: $OPTARG\n" >&2
+      output_dir="$OPTARG"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1                                                
+      ;;
+  esac
+done
+
+# check if the directory exists
+if [ ! -d $output_dir ]; then
+    mkdir -p $output_dir
+fi
+
+n=0
+maxjobs=$core
+
+# 1.Convert from .sra to fastq
+for f in `ls $input_dir/*.sra`; # list all the sra files 
+do
+    sraName=${f##*/}
+    sraBasename=${sraName%.*}
+
+    ( fastq-dump.2.4.2 -Z $f > $input_dir/$sraBasename.fastq && echo "sra2fastq $f:OK" >&2 ) &
+    if (( $(($((++n)) % $maxjobs)) == 0 )) ; then                                              
+        wait # wait until all have finished (not optimal, but most times good enough)
+        echo $n wait
+    fi
+done
+wait
+
+# 2. Rename fastq based on annotation file
+# annot SRA_id, filename, e.g
+# test/SRA/SRR1619234.fastq,test/SRA/KoefflerLab_BM_ChIPseq_Cebpa_hg19_rep1.fastq  
+cat $annot | while IFS=, read sraName fName;
+do
+    mv $sraName $fName;
+done
+wait
+
+# 3. Create the list of files
+#awk -F',' '{print $2}' $annot | sed 's/_rep[0-9].fastq//' | uniq > $input_dir/list.txt
+
+
+## 4. Concatenate fastq files
+#for f in `cat $input_dir/list.txt`;
+#do
+#    `cat $f* > $f.fastq && echo "concatenate Replicates $f:OK" >&2`
+#done
+
+# check if the Reps dir exists (Reps dir is to store the replicates samples)
+#if [ ! -d $input_dir/Reps ]; then
+#    mkdir -p $input_dir/Reps
+#fi
+#`mv $input_dir/*rep* $input_dir/Reps/`
+
+# 5. Bowtie2 alignment 
+for f in `ls $input_dir/*.fastq`;
+do
+    fastqName=${f##*/}
+    fastqBasename=${fastqName%.*}
+    #( bowtie2 --very-sensitive -x /home/ricky/Rlim/Biotools/Genomes/hg19/bowtie2/hg19 -U $f > $input_dir/$fastqBasename.sam && echo "bowtie2 alignment $f:OK" >&2 ) & 
+    ( bowtie2 --very-sensitive -x $genomeRef -U $f > $input_dir/$fastqBasename.sam && echo "bowtie2 alignment $f:OK" >&2 ) & 
+    if (( $(($((++n)) % $maxjobs)) == 0 )) ; then                                              
+        wait 
+        echo $n wait
+    fi
+done
+wait
+
+# 6. Samtools sam2bam conversion and mapq 10 filtering, bam sorting, and duplicates aligned reads removal 
+for f in `ls $input_dir/*.sam`;                                                                                   
+do
+    samName=${f##*/}
+    samBasename=${samName%.*}
+    samtools view -q 10 -bS $f -o tmp.bam && echo "sam2bam conversion $f:OK" >&2; 
+    samtools sort tmp.bam tmp.sorted && echo "bam sorting $f:OK" >&2;
+    samtools rmdup -s tmp.sorted.bam $output_dir/$samBasename"_q10rmdup.sorted.bam" && echo "duplicate removal $f:OK" >&2; 
+    rm tmp.bam tmp.sorted.bam   
+done
+wait
+
+rm $input_dir/*.sam 
+rm $input_dir/*.fastq
