@@ -40,12 +40,11 @@ opts_chunk$set(cache.extra = rand_seed)
 
 \begingroup
 \centering
-{\LARGE Chromatin Conformation Prediction\\[1.5em]
-\large Ricky Lim\Mark{1}, Agus Salim\Mark{2}, Touati Benoukraf\Mark{1}}\\[1em]
+{\LARGE Predicting Chromatin Conformation From ChIPseq Transcription Factor\\[1.5em]
+\large Ricky Lim\Mark{1}, Samuel Collombet\Mark{2}, Nicolas Bertin\Mark{1}, Agus Salim\Mark{3}, Touati Benoukraf\Mark{1}}\\[1em]
 \begin{tabular}{*{3}{>{\centering}p{.25\textwidth}}}
-\Mark{1}Cancer Science Institute of Singapore& \Mark{2}Department of Mathematics and Statistics& \Mark{3}Cancer Science Institute of Singapore\tabularnewline
-National University of Singapore& La Trobe University& National University of Singapore\tabularnewline
-\url{csilr@nus.edu.sg} & \url{A.Salim@latrobe.edu.au} & \url{csitb@nus.edu.sg}
+    \Mark{1}Cancer Science Institute of Singapore, National University of Singapore&\Mark{2}Institut de Biologie de l', Ecole Normale Superieur de Paris& \Mark{3}Department of Mathematics and Statistics, La Trobe University& \tabularnewline
+\url{benoukraf@nus.edu.sg}
 \end{tabular}\par
 \endgroup
 
@@ -56,7 +55,6 @@ National University of Singapore& La Trobe University& National University of Si
 \\
 ChIPseq could identify not only the direct binding sites of the chromatin protein of interest, but also the indirect ones. 
 This owes to the existance of chromatin conformations or complexes. The formation of such complexes will cluster co-factors in close proximity.
-ChIPseq experiment allows the collections of such cluster by means of immunoprecipitation.
 \\ 
 Here, we are interested in the identification of not only the \textit{direct} binding sites but also the \textit{indirect} ones. With such knowledge, we could predict the chromatin conformation of the protein of interest.
 \\
@@ -69,6 +67,264 @@ Here, we are interested in the identification of not only the \textit{direct} bi
     
     Using M-Component MM, each cluster is called into each component. Therefore each component corresponds to a cluster of binding sites of the chromatin protein.
 
+\section{Implementation and Test}
+
+\begin{verbatim}
+# export PATH for scripts required 
+PATH=$PATH:/home/ricky/Rlim/ChromatinConformation/Script;export PATH;
+\end{verbatim}
+
+\small{For more details information concerning the datasets please contact Nicolas Bertin for NF-$\kappa$B Zhao dataset and Cebp$\alpha$ with Samuel Collombet}
+\subsection{Read Aligns}
+
+\subsubsection{NF-$\kappa$B ChIPseq Transcription factor from Zhao, et al 2014}
+The read dataset was obtained and aligned using bowtie by Nicolas Bertin (Fullwood Lab).
+The dataset was in BAM format and sorted accordingly, as follows: 
+
+\begin{verbatim}
+
+ls *.bam | parallel -j 3 'samtools sort {} {.}.sorted' & 
+
+\end{verbatim}
+
+Only the sorted BAM files were stored.
+
+
+\subsubsection{Cebp$\alpha$ ChIPseq in different cell lines from Samuel}
+The read dataset was obtained and aligned by Samuel.
+The dataset was downloaded from tblab-server at the following directory:
+
+\verb |/DAS/TBlab/Samuel/raw/new/| 
+
+The dataset was in BAM format and sorted accordingly, as follows: 
+
+\begin{verbatim}
+    ls *.bam | parallel -j 3 'samtools sort {} {.}.sorted' & 
+\end{verbatim}
+
+Only the sorted BAM files were stored.
+
+\subsubsection{Cebp$\alpha$ ChIPseq in from Porse}
+The read dataset was obtained from NCBI with GEO GSE42321. 
+The downloaded SRA files were from Cebp$\alpha$-16h and IgG mock (Input).
+The dataset was stored in the following directory:
+
+\verb|/home/ricky/Rlim/ChromatinConformation/Input/ReadAligns/Porse|            
+
+\begin{verbatim}
+Script/getBamFromSRA -c 2 -g /home/ricky/Rlim/Biotools/Genomes/mm10_bowtie2_index/bowtie2\ 
+-a /home/ricky/Rlim/ChromatinConformation/Input/ReadAligns/Porse/annot.txt 
+-i /home/ricky/Rlim/ChromatinConformation/Input/ReadAligns/Porse\
+-o /home/ricky/Rlim/ChromatinConformation/Output/ReadAligns/Porse 2> Log/getBamFromSRA_Porse.txt 
+\end{verbatim}
+
+\subsubsection{Cebp$\alpha$ ChIPseq in from Benner}
+The read dataset was obtained from NCBI with GEO GSM537984. 
+The downloaded FA files were from Cebp$\alpha$-16h and IgG mock (Input).
+The dataset was stored in the following directory:
+
+\begin{verbatim}
+Script/getBamFromFA -c 2 -g /home/ricky/Rlim/Biotools/Genomes/mm10_bowtie2_index/bowtie2\
+-a Input/ReadAligns/Benner/annot.txt -i Input/ReadAligns/Benner/ 
+-o Output/ReadAligns/Benner/ 2> Log/getBamFromFA_Benner.txt
+\end{verbatim}
+
+
+\subsection{Quality Check}
+\subsubsection{NF-$\kappa$B ChIPseq Transcription factor from Zhao, et al 2014}
+\begin{verbatim}
+ls Input/Bam/ZhaoB_etal.CellRep2014/*.bam |\ 
+parallel -j 3 'fastqc -o Output/QC/ZhaoB_etal.CellRep2014/ {}' &\
+\end{verbatim}
+
+\subsubsection{Cebp$\alpha$ ChIPseq in different cell lines from Samuel}
+\begin{verbatim}
+ls Input/Bam/Samuel/*.bam |\ 
+parallel -j 2 'fastqc -o Output/QC/Samuel {}' &\
+\end{verbatim}
+
+\subsubsection{Cebp$\alpha$ ChIPseq in from Porse}
+\begin{verbatim}
+ls Input/QC/Porse/*.bam | parallel -j 2 'fastqc -o Output/QC/Porse/ {}'
+\end{verbatim}
+
+\subsubsection{Cebp$\alpha$ ChIPseq in from Benner}
+\begin{verbatim}
+ls Input/QC/Benner/*.bam | parallel -j 2 'fastqc -o Output/QC/Benner/ {}'
+\end{verbatim}
+
+\subsection{Peak Calls}
+We used \href{https://github.com/gui11aume/zerone/tree/master/doc}{jaHMM} for peak callings and macs2 peak caller.
+jahmm library was downloaded and stored locally at 
+
+\verb|/home/ricky/Rlim/ChromatinConformation/Library/jahmm|
+
+\subsubsection{NF-$\kappa$B ChIPseq Transcription factor from Zhao, et al 2014}
+\begin{verbatim}
+
+Script/jahmmPeakCalling.sh -c 4 -g hg19 -r 300\ 
+-i Input/PeakCalls/ZhaoB_etal.CellRep2014/\ 
+-o Output/PeakCalls/Jahmm/ZhaoB_etal.CellRep2014/\ 
+2> Log/jahmmPeakCall_ZhaoB.txt 
+
+
+\end{verbatim}
+
+Number of peaks called by jahmm from Zhao datasets are in millions. 
+\begin{verbatim}
+   8599068 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_cREL_Rep1.sorted_peaks.bed
+   9382822 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_cREL_Rep2.sorted_peaks.bed
+   6144560 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p50_Rep1.sorted_peaks.bed
+   5832975 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p50_Rep2.sorted_peaks.bed
+   8622964 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p52_Rep1.sorted_peaks.bed
+   8627622 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p52_Rep2.sorted_peaks.bed
+   9384884 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p65_Rep1.sorted_peaks.bed
+   9363618 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p65_Rep2.sorted_peaks.bed
+   9398329 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_RELB_Rep0.sorted_peaks.bed
+\end{verbatim}
+
+\begin{verbatim}
+
+Script/macsPeakCalling.sh -c 4 -g hs\ 
+-i Input/PeakCalls/ZhaoB_etal.CellRep2014/\
+-o Output/PeakCalls/ZhaoB_etal.CellRep2014\ 
+2> Log/macsPeakCall_Zhao.txt
+
+\end{verbatim}
+
+Number of peaks called by macs2 from Zhao datasets in majority are in millions. 
+\begin{verbatim}
+  1138227 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_cREL_Rep1.sorted_summits_peaks.bed
+  1045436 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_cREL_Rep2.sorted_summits_peaks.bed
+   445594 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p50_Rep1.sorted_summits_peaks.bed
+   465586 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p50_Rep2.sorted_summits_peaks.bed
+   984604 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p52_Rep1.sorted_summits_peaks.bed
+   385493 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p52_Rep2.sorted_summits_peaks.bed
+  3591979 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p65_Rep1.sorted_summits_peaks.bed
+  3406538 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p65_Rep2.sorted_summits_peaks.bed
+  3706260 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_RELB_Rep0.sorted_summits_peaks.bed
+\end{verbatim}
+
+\subsubsection{Cebp$\alpa$ from Samuel}
+
+Note that we used macs2 as the dataset from Samuel has not input and jahmm could call peaks without an input sample.
+
+\begin{verbatim}
+
+Script/macsPeakCalling.sh -c 4 -g hs\ 
+-i Input/PeakCalls/Samuel/\ 
+-o Output/PeakCalls/Macs/Samuel/\ 
+2> Log/macsPeakCall_Samuel.txt
+
+\end{verbatim}
+
+
+\subsubsection{Cebp$\alpha$ ChIPseq in from Porse}
+\begin{verbatim}
+ mv Porse_Liver_ChIPseq_Input_mm10_rep0_q10rmdup.sorted.bam\
+    Porse_Liver_ChIPseq_mm10_rep0_q10rmdup_Input.sorted.bam 
+ mv Porse_Liver_ChIPseq_CebpA_mm10_rep0_q10rmdup.sorted.bam\ 
+    Porse_Liver_ChIPseq_mm10_rep0_q10rmdup_CebpA.sorted.bam 
+
+Script/jahmmPeakCalling.sh -c 2 -g mm10 -r 300 -i Input/PeakCalls/Porse/\ 
+ -o Output/PeakCalls/Jahmm/Porse/ 2> Log/jahmmPeakCall_Porse.txt
+\end{verbatim}
+
+\subsubsection{Cebp$\alpha$ ChIPseq in from Benner}
+\begin{verbatim}
+mv Benner_ThioMac_ChIPseq_CebpA_mm10_rep0_q10rmdup.sorted.bam\ 
+   Benner_ThioMac_ChIPseq_mm10_rep0_q10rmdup_CebpA.sorted.bam
+mv Benner_ThioMac_ChIPseq_Input_mm10_rep0_q10rmdup.sorted.bam\ 
+   Benner_ThioMac_ChIPseq_mm10_rep0_q10rmdup_Input.sorted.bam
+
+Script/jahmmPeakCalling.sh -c 2 -g mm10 -r 300 -i Input/PeakCalls/Benner/\ 
+-o Output/PeakCalls/Benner/ 2> Log/jahmmPeakCall_Benner.txt
+\end{verbatim}
+
+
+\subsection{Component Calls}
+
+%\subsubsection{NF-$\kappa$B ChIPseq Transcription factor from Zhao, et al 2014}
+%\begin{verbatim}
+%Rscript Script/mmComponentCalls.R --model='GMM' --ncomp=3 --oneComp=TRUE\ 
+%--input_dir='/home/ricky/Rlim/ChromatinConformation/Input/ComponentCalls/Jahmm/ZhaoB_etal.CellRep2014/'\
+%--output_dir='/home/ricky/Rlim/ChromatinConformation/Output/ComponentCalls/Jahmm/ZhaoB_etal.CellRep2014/'\
+%2> Log/mmComponentCall_ZhaoB.txt
+%\end{verbatim}
+
+\subsubsection{Cebp$\alpa$ from Samuel}
+\begin{verbatim}
+
+Script/mmComponentCalls.R --model='GMM' --ncomp=3 --oneComp=TRUE\ 
+--input_dir='/home/ricky/Rlim/ChromatinConformation/Input/ComponentCalls/Macs/Samuel/'\ 
+--output_dir='/home/ricky/Rlim/ChromatinConformation/Output/ComponentCalls/Macs/Samuel/'\ 
+2> Log/mmComponentCall_Samuel.txt\
+
+\end{verbatim}
+
+\subsubsection{Cebp$\alpa$ from Porse}
+\begin{verbatim}
+Rscript Script/mmComponentCalls.R --model='GMM' --ncomp=5 --oneComp=TRUE\ 
+--input_dir='Input/ComponentCalls/Jahmm/Porse/'\
+--output_dir='Output/ComponentCalls/Jahmm/Porse/' 2> Log/mmComponentCall_Porse.txt
+\end{verbatim}
+
+\subsubsection{Cebp$\alpa$ from Benner}
+\begin{verbatim}
+Script/mmComponentCalls.R --model='GMM' --ncomp=3 --oneComp=TRUE\ 
+--input_dir='Input/ComponentCalls/Jahmm/Benner/'\ 
+--output_dir='Output/ComponentCalls/Jahmm/Benner/' 2> Log/mmComponentCall_Benner.txt
+\end{verbatim}
+
+\subsection{BiClustering: Direct and Indirect}
+
+\end{verbatim}
+
+\subsubsection{Cebp$\alpa$ from Samuel}
+\begin{verbatim}
+
+Rscript Script/assignLocalClustering.R --distance=3000 --filter=TRUE\ 
+--input_dir='/home/ricky/Rlim/ChromatinConformation/Input/LocalClusters/Macs/Samuel/'\ 
+--output_dir='/home/ricky/Rlim/ChromatinConformation/Output/LocalClusters/Macs/Samuel/'\
+2> Log/assignLocalCluster_Samuel.txt
+
+\end{verbatim}
+
+\subsubsection{Cebp$\alpa$ from Porse}
+\begin{verbatim}
+Script/assignLocalClustering.R --distance=3000 --filter=TRUE\ 
+--input_dir='/home/ricky/Rlim/ChromatinConformation/Input/LocalClusters/Jahmm/Porse/'\ 
+--output_dir='/home/ricky/Rlim/ChromatinConformation/Output/LocalClusters/Jahmm/Porse/'
+\end{verbatim}
+
+\subsubsection{Cebp$\alpa$ from Benner}
+\begin{verbatim}
+Script/assignLocalClustering.R --distance=3000 --filter=TRUE\ 
+--input_dir='/home/ricky/Rlim/ChromatinConformation/Input/LocalClusters/Jahmm/Benner/'\ 
+--output_dir='/home/ricky/Rlim/ChromatinConformation/Output/LocalClusters/Jahmm/Benner/'\ 
+2> Log/assignLocalCluster_Benner.txt
+
+\end{verbatim}
+
+\subsection{Motif Calls}
+\subsubsection{Cebp$\alpa$ from Samuel}
+
+
+\subsubsection{Cebp$\alpa$ from Porse}
+
+\subsubsection{Cebp$\alpa$ from Benner}
+\begin{verbatim}
+# convert the bed to fasta
+ls Input/MotifCalls/Jahmm/Benner/*.bed |\ 
+parallel -j 2 "bedtools getfasta\ 
+-fi /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.fa -bed {} -fo {.}.fa"
+
+# meme-chip
+ls Input/MotifCalls/Jahmm/Benner/*.fa |\ 
+parallel -j 2 "meme-chip -db ~/Rlim/Biotools/motif_databases/JASPAR_CORE_2014_vertebrates.meme\ 
+-oc Output/MotifCalls/Jahmm/Benner/{/.}\ 
+-index-name {/.} -meme-mod zoops -meme-minw 4 -meme-maxw 10 -meme-nmotifs 10 {}"
+\end{verbatim}
 
 \begin{verbatim}
   Filename: chromatinConformation.Rnw
@@ -79,6 +335,7 @@ Here, we are interested in the identification of not only the \textit{direct} bi
 <<>>=
 sessionInfo()
 @
+
 
 <<knitIt, include=FALSE, cache=TRUE, message=FALSE, warning=FALSE>>=
 library(knitr)

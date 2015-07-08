@@ -1,4 +1,3 @@
-
 ## ----setup, include=FALSE, cache=TRUE------------------------------------
 # set global chunk options
 # for figures
@@ -10,15 +9,12 @@ options(replace.assign=TRUE,width=90)
 opts_chunk$set(cache.extra = R.version,cache.path='cache/')
 opts_chunk$set(cache.extra = rand_seed)
 
-
 ## ------------------------------------------------------------------------
 sessionInfo()
-
 
 ## ----knitIt, include=FALSE, cache=TRUE, message=FALSE, warning=FALSE-----
 library(knitr)
 purl("chromatinConformation.Rnw" ) # compile to tex
 purl("chromatinConformation.Rnw", documentation = 0) # extract R code only
 knit2pdf("chromatinConformation.Rnw")
-
 
