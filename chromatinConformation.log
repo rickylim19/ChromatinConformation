@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.8.13)  8 JUL 2015 13:38
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.8.13)  24 JUL 2015 16:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -969,7 +969,7 @@ If that doesn't work, type  X <return>  to quit.
 ! Undefined control sequence.
 <recently read> \alpa 
                       
-l.247 \subsubsection{Cebp$\alpa$ from Samuel}
+l.255 \subsubsection{Cebp$\alpa$ from Samuel}
                                              
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -980,7 +980,29 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...ubsection\endcsname }\fi Cebp$\alpa 
                                                   $ from Samuel}{\thepage }{...
-l.247 \subsubsection{Cebp$\alpa$ from Samuel}
+l.255 \subsubsection{Cebp$\alpa$ from Samuel}
+                                             
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<recently read> \alpa 
+                      
+l.302 \subsubsection{Cebp$\alpa$ from Samuel}
+                                             
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
+                                                  $ from Samuel}{\thepage }{...
+l.302 \subsubsection{Cebp$\alpa$ from Samuel}
                                              
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -989,72 +1011,6 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 [3]
-! Undefined control sequence.
-<recently read> \alpa 
-                      
-l.294 \subsubsection{Cebp$\alpa$ from Samuel}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
-                                                  $ from Samuel}{\thepage }{...
-l.294 \subsubsection{Cebp$\alpa$ from Samuel}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \alpa 
-                      
-l.304 \subsubsection{Cebp$\alpa$ from Porse}
-                                            
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
-                                                  $ from Porse}{\thepage }{\...
-l.304 \subsubsection{Cebp$\alpa$ from Porse}
-                                            
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \alpa 
-                      
-l.311 \subsubsection{Cebp$\alpa$ from Benner}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
-                                                  $ from Benner}{\thepage }{...
-l.311 \subsubsection{Cebp$\alpa$ from Benner}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
 
 ! LaTeX Error: \begin{document} ended by \end{verbatim}.
 
@@ -1062,7 +1018,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.320 \end{verbatim}
+l.328 \end{verbatim}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -1071,14 +1027,14 @@ or  <return>  to continue without it.
 ! Extra \endgroup.
 <recently read> \endgroup 
                           
-l.320 \end{verbatim}
+l.328 \end{verbatim}
                     
 Things are pretty mixed up, but I think the worst is over.
 
 ! Undefined control sequence.
 <recently read> \alpa 
                       
-l.322 \subsubsection{Cebp$\alpa$ from Samuel}
+l.330 \subsubsection{Cebp$\alpa$ from Samuel}
                                              
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1089,7 +1045,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...ubsection\endcsname }\fi Cebp$\alpa 
                                                   $ from Samuel}{\thepage }{...
-l.322 \subsubsection{Cebp$\alpa$ from Samuel}
+l.330 \subsubsection{Cebp$\alpa$ from Samuel}
                                              
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1100,51 +1056,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <recently read> \alpa 
                       
-l.332 \subsubsection{Cebp$\alpa$ from Porse}
-                                            
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
-                                                  $ from Porse}{\thepage }{\...
-l.332 \subsubsection{Cebp$\alpa$ from Porse}
-                                            
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \alpa 
-                      
-l.339 \subsubsection{Cebp$\alpa$ from Benner}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
-                                                  $ from Benner}{\thepage }{...
-l.339 \subsubsection{Cebp$\alpa$ from Benner}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \alpa 
-                      
-l.349 \subsubsection{Cebp$\alpa$ from Samuel}
+l.357 \subsubsection{Cebp$\alpa$ from Samuel}
                                              
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1155,51 +1067,7 @@ and I'll forget about whatever was undefined.
 ! Undefined control sequence.
 <argument> ...ubsection\endcsname }\fi Cebp$\alpa 
                                                   $ from Samuel}{\thepage }{...
-l.349 \subsubsection{Cebp$\alpa$ from Samuel}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \alpa 
-                      
-l.352 \subsubsection{Cebp$\alpa$ from Porse}
-                                            
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
-                                                  $ from Porse}{\thepage }{\...
-l.352 \subsubsection{Cebp$\alpa$ from Porse}
-                                            
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \alpa 
-                      
-l.354 \subsubsection{Cebp$\alpa$ from Benner}
-                                             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
-                                                  $ from Benner}{\thepage }{...
-l.354 \subsubsection{Cebp$\alpa$ from Benner}
+l.357 \subsubsection{Cebp$\alpa$ from Samuel}
                                              
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1208,27 +1076,50 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 [4]
-Package color Info: Redefining color shadecolor on input line 375.
+! Undefined control sequence.
+<recently read> \alpa 
+                      
+l.407 \subsubsection{Cebp$\alpa$ from Samuel}
+                                             
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<argument> ...ubsection\endcsname }\fi Cebp$\alpa 
+                                                  $ from Samuel}{\thepage }{...
+l.407 \subsubsection{Cebp$\alpa$ from Samuel}
+                                             
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+[5]
+Package color Info: Redefining color shadecolor on input line 464.
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 377.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 408.
- [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 408.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 466.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 497.
+ [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 497.
  (./chromatinConformation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 408.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 408.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 497.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 497.
 Package rerunfilecheck Info: File `chromatinConformation.out' has not changed.
-(rerunfilecheck)             Checksum: 71A75342FBCE9875D8624427B67E5092;1355.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 408.
+(rerunfilecheck)             Checksum: 602F73E6C67E765A123A37C4C159E1AB;1717.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 497.
  ) 
 Here is how much of TeX's memory you used:
- 11921 strings out of 495028
- 170341 string characters out of 6181497
+ 11928 strings out of 495028
+ 170427 string characters out of 6181497
  240818 words of memory out of 5000000
- 14921 multiletter control sequences out of 15000+600000
+ 14923 multiletter control sequences out of 15000+600000
  46057 words of font info for 87 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 36i,12n,38p,337b,453s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,12n,38p,337b,454s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/ricky/.texmf-var/fonts/pk/ljfour/jknappen/ec/tctt0900.600pk> </home/r
 icky/.texmf-var/fonts/pk/ljfour/jknappen/ec/ectt0900.600pk>{/usr/share/texlive/
 texmf-dist/fonts/enc/dvips/base/8r.enc} </home/ricky/.texmf-var/fonts/pk/ljfour
@@ -1236,10 +1127,10 @@ texmf-dist/fonts/enc/dvips/base/8r.enc} </home/ricky/.texmf-var/fonts/pk/ljfour
 athpazo/fplmri.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplb
 8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on chromatinConformation.pdf (5 pages, 92026 bytes).
+Output written on chromatinConformation.pdf (6 pages, 93904 bytes).
 PDF statistics:
- 242 PDF objects out of 1000 (max. 8388607)
- 112 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
- 73 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 257 PDF objects out of 1000 (max. 8388607)
+ 125 compressed objects within 2 object streams
+ 41 named destinations out of 1000 (max. 500000)
+ 81 words of extra memory for PDF output out of 10000 (max. 10000000)
 

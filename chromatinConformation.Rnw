@@ -104,9 +104,12 @@ The dataset was in BAM format and sorted accordingly, as follows:
 
 Only the sorted BAM files were stored.
 
-\subsubsection{Cebp$\alpha$ ChIPseq in from Porse}
+\subsubsection{Cebp ChIPseq in from Porse}
 The read dataset was obtained from NCBI with GEO GSE42321. 
-The downloaded SRA files were from Cebp$\alpha$-16h and IgG mock (Input).
+The download link was stored in: 
+
+\verb|/home/ricky/Rlim/ChromatinConformation/Input/SRA/Porse/sampleDownloadLinks.txt|
+
 The dataset was stored in the following directory:
 
 \verb|/home/ricky/Rlim/ChromatinConformation/Input/ReadAligns/Porse|            
@@ -118,10 +121,15 @@ Script/getBamFromSRA -c 2 -g /home/ricky/Rlim/Biotools/Genomes/mm10_bowtie2_inde
 -o /home/ricky/Rlim/ChromatinConformation/Output/ReadAligns/Porse 2> Log/getBamFromSRA_Porse.txt 
 \end{verbatim}
 
-\subsubsection{Cebp$\alpha$ ChIPseq in from Benner}
+\subsubsection{Cebp ChIPseq in from Benner}
 The read dataset was obtained from NCBI with GEO GSM537984. 
-The downloaded FA files were from Cebp$\alpha$-16h and IgG mock (Input).
+The download link was stored in:
+
+\verb|/home/ricky/Rlim/ChromatinConformation/Input/FA/Benner/sampleDownloadLinks.txt|
+
 The dataset was stored in the following directory:
+
+\verb|/home/ricky/Rlim/ChromatinConformation/Input/ReadAligns/Benner|            
 
 \begin{verbatim}
 Script/getBamFromFA -c 2 -g /home/ricky/Rlim/Biotools/Genomes/mm10_bowtie2_index/bowtie2\
@@ -143,12 +151,12 @@ ls Input/Bam/Samuel/*.bam |\
 parallel -j 2 'fastqc -o Output/QC/Samuel {}' &\
 \end{verbatim}
 
-\subsubsection{Cebp$\alpha$ ChIPseq in from Porse}
+\subsubsection{Cebp ChIPseq in from Porse}
 \begin{verbatim}
 ls Input/QC/Porse/*.bam | parallel -j 2 'fastqc -o Output/QC/Porse/ {}'
 \end{verbatim}
 
-\subsubsection{Cebp$\alpha$ ChIPseq in from Benner}
+\subsubsection{Cebp ChIPseq in from Benner}
 \begin{verbatim}
 ls Input/QC/Benner/*.bam | parallel -j 2 'fastqc -o Output/QC/Benner/ {}'
 \end{verbatim}
@@ -219,23 +227,23 @@ Script/macsPeakCalling.sh -c 4 -g hs\
 \end{verbatim}
 
 
-\subsubsection{Cebp$\alpha$ ChIPseq in from Porse}
-\begin{verbatim}
- mv Porse_Liver_ChIPseq_Input_mm10_rep0_q10rmdup.sorted.bam\
-    Porse_Liver_ChIPseq_mm10_rep0_q10rmdup_Input.sorted.bam 
- mv Porse_Liver_ChIPseq_CebpA_mm10_rep0_q10rmdup.sorted.bam\ 
-    Porse_Liver_ChIPseq_mm10_rep0_q10rmdup_CebpA.sorted.bam 
+\subsubsection{Cebp ChIPseq in from Porse}
+ %mv Porse_Liver_ChIPseq_Input_mm10_rep0_q10rmdup.sorted.bam\
+ %   Porse_Liver_ChIPseq_mm10_rep0_q10rmdup_Input.sorted.bam 
+ %mv Porse_Liver_ChIPseq_CebpA_mm10_rep0_q10rmdup.sorted.bam\ 
+ %   Porse_Liver_ChIPseq_mm10_rep0_q10rmdup_CebpA.sorted.bam 
 
+\begin{verbatim}
 Script/jahmmPeakCalling.sh -c 2 -g mm10 -r 300 -i Input/PeakCalls/Porse/\ 
  -o Output/PeakCalls/Jahmm/Porse/ 2> Log/jahmmPeakCall_Porse.txt
 \end{verbatim}
 
-\subsubsection{Cebp$\alpha$ ChIPseq in from Benner}
+\subsubsection{Cebp ChIPseq in from Benner}
+%mv Benner_ThioMac_ChIPseq_CebpA_mm10_rep0_q10rmdup.sorted.bam\ 
+%   Benner_ThioMac_ChIPseq_mm10_rep0_q10rmdup_CebpA.sorted.bam
+%mv Benner_ThioMac_ChIPseq_Input_mm10_rep0_q10rmdup.sorted.bam\ 
+%   Benner_ThioMac_ChIPseq_mm10_rep0_q10rmdup_Input.sorted.bam
 \begin{verbatim}
-mv Benner_ThioMac_ChIPseq_CebpA_mm10_rep0_q10rmdup.sorted.bam\ 
-   Benner_ThioMac_ChIPseq_mm10_rep0_q10rmdup_CebpA.sorted.bam
-mv Benner_ThioMac_ChIPseq_Input_mm10_rep0_q10rmdup.sorted.bam\ 
-   Benner_ThioMac_ChIPseq_mm10_rep0_q10rmdup_Input.sorted.bam
 
 Script/jahmmPeakCalling.sh -c 2 -g mm10 -r 300 -i Input/PeakCalls/Benner/\ 
 -o Output/PeakCalls/Benner/ 2> Log/jahmmPeakCall_Benner.txt
@@ -262,14 +270,14 @@ Script/mmComponentCalls.R --model='GMM' --ncomp=3 --oneComp=TRUE\
 
 \end{verbatim}
 
-\subsubsection{Cebp$\alpa$ from Porse}
+\subsubsection{Cebp from Porse}
 \begin{verbatim}
 Rscript Script/mmComponentCalls.R --model='GMM' --ncomp=5 --oneComp=TRUE\ 
 --input_dir='Input/ComponentCalls/Jahmm/Porse/'\
 --output_dir='Output/ComponentCalls/Jahmm/Porse/' 2> Log/mmComponentCall_Porse.txt
 \end{verbatim}
 
-\subsubsection{Cebp$\alpa$ from Benner}
+\subsubsection{Cebp from Benner}
 \begin{verbatim}
 Script/mmComponentCalls.R --model='GMM' --ncomp=3 --oneComp=TRUE\ 
 --input_dir='Input/ComponentCalls/Jahmm/Benner/'\ 
@@ -290,14 +298,14 @@ Rscript Script/assignLocalClustering.R --distance=3000 --filter=TRUE\
 
 \end{verbatim}
 
-\subsubsection{Cebp$\alpa$ from Porse}
+\subsubsection{Cebp from Porse}
 \begin{verbatim}
 Script/assignLocalClustering.R --distance=3000 --filter=TRUE\ 
 --input_dir='/home/ricky/Rlim/ChromatinConformation/Input/LocalClusters/Jahmm/Porse/'\ 
 --output_dir='/home/ricky/Rlim/ChromatinConformation/Output/LocalClusters/Jahmm/Porse/'
 \end{verbatim}
 
-\subsubsection{Cebp$\alpa$ from Benner}
+\subsubsection{Cebp from Benner}
 \begin{verbatim}
 Script/assignLocalClustering.R --distance=3000 --filter=TRUE\ 
 --input_dir='/home/ricky/Rlim/ChromatinConformation/Input/LocalClusters/Jahmm/Benner/'\ 
@@ -306,25 +314,106 @@ Script/assignLocalClustering.R --distance=3000 --filter=TRUE\
 
 \end{verbatim}
 
-\subsection{Motif Calls}
+\subsection{Motif Calls from Component Calls}
 \subsubsection{Cebp$\alpa$ from Samuel}
 
+\begin{verbatim}
+# extend bed peak summit from 1 bp resolution to 300 bp bin (150 bp in both strand directions)
+ls Input/MotifCalls/Macs/Samuel/ComponentCalls/*.bed |\ 
+parallel -j 2 ``bedtools slop -i {}\ 
+-g /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.genome\ -b 150 >{.}_150bp_extended.bed''
 
-\subsubsection{Cebp$\alpa$ from Porse}
+# bed to fasta
+ls Input/MotifCalls/Macs/Samuel/ComponentCalls/*extended.bed |\ 
+parallel -j 2 ``bedtools getfasta\ 
+-fi /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.fa -bed {} -fo {.}.fa''
 
-\subsubsection{Cebp$\alpa$ from Benner}
+ls Input/MotifCalls/Macs/Samuel/ComponentCalls/*.fa |\ 
+parallel -j 2 ``meme-chip\ 
+-db /home/ricky/Rlim/Biotools/motif_databases/JASPAR_CORE_2014_vertebrates.meme\ 
+-oc /home/ricky/Rlim/ChromatinConformation/Output/MotifCalls/Macs/Samuel/ComponentCalls/{/.}\ 
+-index-name {/.} -meme-mod zoops -meme-minw 4 -meme-maxw 10 -meme-nmotifs 10 {}''
+
+\end{verbatim}
+
+\subsubsection{Cebp from Porse}
 \begin{verbatim}
 # convert the bed to fasta
-ls Input/MotifCalls/Jahmm/Benner/*.bed |\ 
+ls Input/MotifCalls/Jahmm/Porse/ComponentCalls/*.bed |\ 
 parallel -j 2 "bedtools getfasta\ 
 -fi /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.fa -bed {} -fo {.}.fa"
 
 # meme-chip
-ls Input/MotifCalls/Jahmm/Benner/*.fa |\ 
+ls Input/MotifCalls/Jahmm/Porse/ComponentCalls/*.fa |\ 
 parallel -j 2 "meme-chip -db ~/Rlim/Biotools/motif_databases/JASPAR_CORE_2014_vertebrates.meme\ 
--oc Output/MotifCalls/Jahmm/Benner/{/.}\ 
+-oc Output/MotifCalls/Jahmm/Porse/ComponentCalls{/.}\ 
 -index-name {/.} -meme-mod zoops -meme-minw 4 -meme-maxw 10 -meme-nmotifs 10 {}"
 \end{verbatim}
+
+\subsubsection{Cebp from Benner}
+\begin{verbatim}
+# convert the bed to fasta
+ls Input/MotifCalls/Jahmm/Benner/ComponentCalls/*.bed |\ 
+parallel -j 2 "bedtools getfasta\ 
+-fi /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.fa -bed {} -fo {.}.fa"
+
+# meme-chip
+ls Input/MotifCalls/Jahmm/Benner/ComponentCalls/*.fa |\ 
+parallel -j 2 "meme-chip -db ~/Rlim/Biotools/motif_databases/JASPAR_CORE_2014_vertebrates.meme\ 
+-oc Output/MotifCalls/Jahmm/Benner/ComponentCalls/{/.}\ 
+-index-name {/.} -meme-mod zoops -meme-minw 4 -meme-maxw 10 -meme-nmotifs 10 {}"
+\end{verbatim}
+
+\subsection{Motif Calls from Local Clusters}
+\subsubsection{Cebp$\alpa$ from Samuel}
+
+\begin{verbatim}
+# extend bed peak summit from 1 bp resolution to 300 bp bin (150 bp in both strand directions)
+ls Input/MotifCalls/Macs/Samuel/LocalClusters/*.bed |\ 
+parallel -j 2 ``bedtools slop -i {}\ 
+-g /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.genome\ -b 150 >{.}_150bp_extended.bed''
+
+# bed to fasta
+ls Input/MotifCalls/Macs/Samuel/LocalClusters/*extended.bed |\ 
+parallel -j 2 ``bedtools getfasta\ 
+-fi /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.fa -bed {} -fo {.}.fa''
+
+ls Input/MotifCalls/Macs/Samuel/LocalClusters/*.fa |\ 
+parallel -j 2 ``meme-chip\ 
+-db /home/ricky/Rlim/Biotools/motif_databases/JASPAR_CORE_2014_vertebrates.meme\ 
+-oc /home/ricky/Rlim/ChromatinConformation/Output/MotifCalls/Macs/Samuel/LocalClusters/{/.}\ 
+-index-name {/.} -meme-mod zoops -meme-minw 4 -meme-maxw 10 -meme-nmotifs 10 {}''
+
+\end{verbatim}
+
+\subsubsection{Cebp from Porse}
+\begin{verbatim}
+# convert the bed to fasta
+ls Input/MotifCalls/Jahmm/Porse/LocalClusters/*.bed |\ 
+parallel -j 2 "bedtools getfasta\ 
+-fi /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.fa -bed {} -fo {.}.fa"
+
+# meme-chip
+ls Input/MotifCalls/Jahmm/Porse/LocalClusters/*.fa |\ 
+parallel -j 2 "meme-chip -db ~/Rlim/Biotools/motif_databases/JASPAR_CORE_2014_vertebrates.meme\ 
+-oc Output/MotifCalls/Jahmm/Porse/LocalClusters{/.}\ 
+-index-name {/.} -meme-mod zoops -meme-minw 4 -meme-maxw 10 -meme-nmotifs 10 {}"
+\end{verbatim}
+
+\subsubsection{Cebp from Benner}
+\begin{verbatim}
+# convert the bed to fasta
+ls Input/MotifCalls/Jahmm/Benner/LocalClusters/*.bed |\ 
+parallel -j 2 "bedtools getfasta\ 
+-fi /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.fa -bed {} -fo {.}.fa"
+
+# meme-chip
+ls Input/MotifCalls/Jahmm/Benner/LocalClusters/*.fa |\ 
+parallel -j 2 "meme-chip -db ~/Rlim/Biotools/motif_databases/JASPAR_CORE_2014_vertebrates.meme\ 
+-oc Output/MotifCalls/Jahmm/Benner/LocalClusters/{/.}\ 
+-index-name {/.} -meme-mod zoops -meme-minw 4 -meme-maxw 10 -meme-nmotifs 10 {}"
+\end{verbatim}
+
 
 \begin{verbatim}
   Filename: chromatinConformation.Rnw
