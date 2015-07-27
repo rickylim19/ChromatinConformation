@@ -1,5 +1,14 @@
 #!/usr/bin/env Rscript
 
+#####################################################################################
+#                                                                                   #
+# Assign Peaks into Direct, Indirect, and Noise (if applicable)                     #
+# - Direct refers to the highest peak score                                         #
+# - Indirect refers to the lower peak score                                         #
+# - Noise applies when within the cluster, it contains only the lowest peak score   #
+#                                                                                   #
+#####################################################################################
+
 options(options = 3)
 suppressPackageStartupMessages(library("optparse"))
 suppressPackageStartupMessages(library("mixtools"))
@@ -98,9 +107,9 @@ apply_localClustering <- function(x, distance=3000, filterOutSingle=T, input_dir
 
     #############################################################################
     #                                                                           #
-    # Write 1 table after assigning the direct(D), indirect(I), and             #
+    # Write a table after assigning the direct(D), indirect(I), and             #
     #  noise clusters and returns a list containing :                           #
-    #  - result: direct and indirect bindings                                   #
+    #  - result: direct, indirect, and noise bindings                           #
     #                                                                           #
     #  Header: #chr start end bicluster                                         #
     # 1). Table with both direct and indirect bindings                          #
@@ -125,6 +134,8 @@ apply_localClustering <- function(x, distance=3000, filterOutSingle=T, input_dir
     # chr1    30930339        30930340        2       61      65      D         #
     # chr1    30948870        30948871        1       28      65      I         #
     # chr1    30950137        30950138        2       43      65      D         #
+    # chr1    30960001        30960002        1       10      66      N         #
+    # chr     30960020        30960021        1       15      66      N         #
     #                                                                           #
     # > bicluster_3kb<-assignBiclustering(input.bed ,distance=3000, output.bed  #
     #                                                                           #

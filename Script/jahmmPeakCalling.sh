@@ -66,7 +66,8 @@ if [ ! -d $outputDir ]; then
 fi
 
 # check if the bam files are sorted and there is the sorted input file (for control during peak calling)
-[[ $(ls -A $inputDir*.sorted.bam) && $(ls -A $inputDir*Input.sorted.bam) ]] && echo "contains sorted bam files" >&2 || exit 1
+#[[ $(ls -A $inputDir*.sorted.bam) && $(ls -A $inputDir*Input.sorted.bam) ]] && echo "contains sorted bam files" >&2 || exit 1
+[[ $(ls -A $inputDir*.sorted.bam) && $(ls -A $inputDir*Input*.sorted.bam) ]] && echo "contains sorted bam files" >&2 || exit 1
 
 # convert bam to bed
 ls $inputDir*.sorted.bam | parallel -j $core "bedtools bamtobed -i {} > {.}.bed" && echo "Bam to bed conversion: OK" >&2;
@@ -74,10 +75,8 @@ ls $inputDir*.sorted.bam | parallel -j $core "bedtools bamtobed -i {} > {.}.bed"
 # bin the bed tools, output in 300bin-*.bed
 ls $inputDir*.sorted.bed | parallel -j $core binitBed.py -b $resolution -l $genome -F 'bed' -n $core -od $inputDir {}  && echo "Binning Bed in $resolution bp: OK" >&2;
 
-
 # peak calling
-Rscript Script/jahmmPeakCalls.R --core=$core --input_dir=$inputDir --output_dir=$outputDir --resolution=$resolution && echo "Jahmm Peak calling in $resolution bp: OK" >&2; 
-
+Rscript Script/jahmmPeakCalls.R --core=$core --input_dir=$inputDir --output_dir=$outputDir --resolution=$resolution && echo "Jahmm Peak calling in $resolution bp: OK" >&2 && rm $inputDir*.bed;
 wait
 # removal of unwanted files
-rm $inputDir*.bed
+#rm $inputDir*.bed

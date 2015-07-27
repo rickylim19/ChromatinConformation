@@ -90,8 +90,6 @@ sortComponent <- function(inputData){
     return(result)
 }
 
-
-
 apply_mm <- function(x, ncomp, input_dir, output_dir, model = 'GMM', oneComp=TRUE){
     filename <- removeExt(x)
 
@@ -154,7 +152,7 @@ option_list <- list(
                 help = "number of components tried", default= '4',
                 metavar = "number"),
     make_option("--oneComp", type = "logical", 
-                help = "Fit with only ncomp not trying to find best fit from 2:ncomp", default= TRUE,
+                help = "Fit with only ncomp not trying to find best fit from 2 to n comp", default= TRUE,
                 metavar = "logical"),
     make_option("--input_dir", action = "store", type = "character", 
                 help = "input directory",
@@ -163,8 +161,6 @@ option_list <- list(
                 help = "output directory",
                 metavar = "character")
     )
-
-
 
 ### call the command with apply in parallel)
 opt <- parse_args(OptionParser(option_list = option_list))

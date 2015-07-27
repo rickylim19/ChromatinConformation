@@ -74,8 +74,8 @@ fi
 n=0
 maxjobs=$core
 
-# 1.Convert from .sra to fastq
-for f in `ls $input_dir*.fa.gz`; # list all the sra files 
+# 1.Unpack gz file
+for f in `ls $input_dir*.fa.gz`; # 
 do
     faName=${f##*/}
     faBasename=${faName%.*}
@@ -85,7 +85,7 @@ do
 
     ( gunzip -c $f > $input_dir$faBasename  && echo "unpack gz $f:OK" >&2 ) &
     if (( $(($((++n)) % $maxjobs)) == 0 )) ; then                                              
-        wait # wait until all have finished (not optimal, but most times good enough)
+        wait 
         echo $n wait
     fi
 done
@@ -123,10 +123,11 @@ do
     samBasename=${samName%.*}
     samtools view -q 10 -bS $f -o tmp.bam && echo "sam2bam conversion $f:OK" >&2; 
     samtools sort tmp.bam tmp.sorted && echo "bam sorting $f:OK" >&2;
-    samtools rmdup -s tmp.sorted.bam $output_dir$samBasename"_q10rmdup.sorted.bam" && echo "duplicate removal $f:OK" >&2; 
-    rm tmp.bam tmp.sorted.bam   
+    #samtools rmdup -s tmp.sorted.bam $output_dir$samBasename"_q10rmdup.sorted.bam" && echo "duplicate removal $f:OK" >&2; 
+    #rm tmp.bam tmp.sorted.bam   
+    samtools rmdup -s tmp.sorted.bam $output_dir$samBasename"_q10rmdup.sorted.bam" && echo "duplicate removal $f:OK" >&2 && rm tmp.bam tmp.sorted.bam $input_dir*sam $input_dir*.fa;   
 done
 wait
 
-rm $input_dir*sam
-rm $input_dir*.fa
+#rm $input_dir*sam
+#rm $input_dir*.fa
