@@ -62,10 +62,17 @@ Here, we are interested in the identification of not only the \textit{direct} bi
 \textbf{Question:} 
 \begin{itemize}
     \item Could we cluster the direct and indirect bindings of chromatin proteins from ChIP-seq experiment using Mixture Models (MMs) ?
-
+    \item Could we cluster the direct and indirect bindings of chromatin proteins from ChIP-seq experiment using Mixture Models (MMs), followed by local clusterings (distance proximity) ?
 \end{itemize}
     
-    Using M-Component MM, each cluster is called into each component. Therefore each component corresponds to a cluster of binding sites of the chromatin protein.
+
+\newpage
+\section{Pipeline Overview}
+\begin{figure}[h!] 
+    \centering 
+    \includegraphics[width=0.7\textwidth]{/home/ricky/Rlim/ChromatinConformation/pipelineChart.pdf}} 
+    \caption{Pipeline for Chromatin Conformation Prediction} 
+\end{figure} 
 
 \section{Implementation and Test}
 
@@ -75,6 +82,9 @@ PATH=$PATH:/home/ricky/Rlim/ChromatinConformation/Script;export PATH;
 \end{verbatim}
 
 \small{For more details information concerning the datasets please contact Nicolas Bertin for NF-$\kappa$B Zhao dataset and Cebp$\alpha$ with Samuel Collombet}
+
+
+
 \subsection{Read Aligns}
 
 \subsubsection{NF-$\kappa$B ChIPseq Transcription factor from Zhao, et al 2014}
@@ -178,7 +188,6 @@ Script/jahmmPeakCalling.sh -c 4 -g hg19 -r 300\
 
 \end{verbatim}
 
-Number of peaks called by jahmm from Zhao datasets are in millions. 
 \begin{verbatim}
    8599068 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_cREL_Rep1.sorted_peaks.bed
    9382822 300bin-ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_cREL_Rep2.sorted_peaks.bed
@@ -212,6 +221,9 @@ Number of peaks called by macs2 from Zhao datasets in majority are in millions.
   3406538 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_p65_Rep2.sorted_summits_peaks.bed
   3706260 ZhaoB_etal.CellRep2014.ChIP-Seq_GM12878_RELB_Rep0.sorted_summits_peaks.bed
 \end{verbatim}
+
+Number of peaks called by jahmm and macs from Zhao datasets are in millions.
+As there are many peaks being called, the subsequent pipelines were not run for this dataset.
 
 \subsubsection{Cebp$\alpa$ from Samuel}
 
@@ -284,7 +296,7 @@ Script/mmComponentCalls.R --model='GMM' --ncomp=3 --oneComp=TRUE\
 --output_dir='Output/ComponentCalls/Jahmm/Benner/' 2> Log/mmComponentCall_Benner.txt
 \end{verbatim}
 
-\subsection{BiClustering: Direct and Indirect}
+\subsection{Local Clusters: Direct and Indirect}
 
 \end{verbatim}
 
@@ -319,6 +331,7 @@ Script/assignLocalClustering.R --distance=3000 --filter=TRUE\
 
 \begin{verbatim}
 # extend bed peak summit from 1 bp resolution to 300 bp bin (150 bp in both strand directions)
+# as samuel peaks were called using macs peak summit with 1 bp resolution
 ls Input/MotifCalls/Macs/Samuel/ComponentCalls/*.bed |\ 
 parallel -j 2 ``bedtools slop -i {}\ 
 -g /home/ricky/Rlim/Biotools/Genomes/mm10/refGenome/mm10.genome\ -b 150 >{.}_150bp_extended.bed''
